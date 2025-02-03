@@ -1,2 +1,2 @@
-# Point-Of-Sale
-POS
+## POS
+
