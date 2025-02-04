@@ -110,6 +110,61 @@
                     ) !!}
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="custom_field1_county">@lang('County'):</label>
+                    {!! Form::select('custom_field1_county', [
+              'Baringo' => 'Baringo',
+              'Bomet' => 'Bomet',
+              'Bungoma' => 'Bungoma',
+              'Busia' => 'Busia',
+              'Elgeyo-Marakwet' => 'Elgeyo-Marakwet',
+              'Embu' => 'Embu',
+              'Garissa' => 'Garissa',
+              'Homa Bay' => 'Homa Bay',
+              'Isiolo' => 'Isiolo',
+              'Kajiado' => 'Kajiado',
+              'Kakamega' => 'Kakamega',
+              'Kericho' => 'Kericho',
+              'Kiambu' => 'Kiambu',
+              'Kilifi' => 'Kilifi',
+              'Kirinyaga' => 'Kirinyaga',
+              'Kisii' => 'Kisii',
+              'Kisumu' => 'Kisumu',
+              'Kitui' => 'Kitui',
+              'Kwale' => 'Kwale',
+              'Laikipia' => 'Laikipia',
+              'Lamu' => 'Lamu',
+              'Machakos' => 'Machakos',
+              'Makueni' => 'Makueni',
+              'Mandera' => 'Mandera',
+              'Meru' => 'Meru',
+              'Migori' => 'Migori',
+              'Marsabit' => 'Marsabit',
+              'Mombasa' => 'Mombasa',
+              'Murang\'a' => 'Murang\'a',
+              'Nairobi' => 'Nairobi',
+              'Nakuru' => 'Nakuru',
+              'Nandi' => 'Nandi',
+              'Narok' => 'Narok',
+              'Nyamira' => 'Nyamira',
+              'Nyandarua' => 'Nyandarua',
+              'Nyeri' => 'Nyeri',
+              'Samburu' => 'Samburu',
+              'Siaya' => 'Siaya',
+              'Taita-Taveta' => 'Taita-Taveta',
+              'Tana River' => 'Tana River',
+              'Tharaka-Nithi' => 'Tharaka-Nithi',
+              'Trans Nzoia' => 'Trans Nzoia',
+              'Turkana' => 'Turkana',
+              'Uasin Gishu' => 'Uasin Gishu',
+              'Vihiga' => 'Vihiga',
+              'Wajir' => 'Wajir',
+              'West Pokot' => 'West Pokot'
+          ], null, ['class' => 'form-control','id'=>'custom_field1_county', 'placeholder' => __('messages.please_select')]); !!}
+                </div>
+            </div>
+            
         @endcomponent
         <input type="hidden" value="{{ $type }}" id="contact_type">
         @component('components.widget', [
@@ -150,6 +205,7 @@
                                     <th>@lang('business.business_name')</th>
                                     <th>@lang('contact.name')</th>
                                     <th>@lang('business.email')</th>
+                                    <!-- <th>@lang('business.country')</th> -->
                                     <th>@lang('contact.tax_no')</th>
                                     <th>@lang('contact.pay_term')</th>
                                     <th>@lang('account.opening_balance')</th>
@@ -163,6 +219,7 @@
                                     <th>@lang('business.business_name')</th>
                                     <th>@lang('user.name')</th>
                                     <th>@lang('business.email')</th>
+                                    <!-- <th>@lang('business.country')</th> -->
                                     <th>@lang('contact.tax_no')</th>
                                     <th>@lang('lang_v1.credit_limit')</th>
                                     <th>@lang('contact.pay_term')</th>

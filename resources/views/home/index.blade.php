@@ -493,12 +493,28 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>@lang('contact.customer')</th>
-                                                    <th>@lang('sale.invoice_no')</th>
-                                                    <th>@lang('home.due_amount')</th>
+                                                    <th>@lang('contact.customer')</th>                                          
+                                                    <th>Current</th>
+                                                    <th>Over 30</th> 
+                                                    <th>Over 60</th> 
+                                                    <th>Over 90</th>
+                                                    <th>Over 120</th>
                                                     <th>@lang('messages.action')</th>
                                                 </tr>
                                             </thead>
+                                            <tfoot>
+                                                <tr>
+                                            <th>@lang('home.total_due_amount')</th>                                          
+                                                    <th ></th>
+                                                    <th></th> 
+                                                    <th></th> 
+                                              <th></th>
+                                              <th></th>
+                                              <th></th>
+
+  
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

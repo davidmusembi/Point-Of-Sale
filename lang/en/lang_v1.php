@@ -900,7 +900,7 @@ return [
     'partial-overdue' => 'Partial Overdue',
     'due_date_label' => 'Due date label',
     'show_due_date' => 'Show due date',
-    'contact_custom_field1' => 'Custom Field 1',
+    'contact_custom_field1' => 'County',
     'contact_custom_field2' => 'Custom Field 2',
     'contact_custom_field3' => 'Custom Field 3',
     'contact_custom_field4' => 'Custom Field 4',

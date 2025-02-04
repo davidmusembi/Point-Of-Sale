@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Aloha\Twilio\Support\Laravel\Facade;
 use App\Business;
 use App\BusinessLocation;
 use App\Contact;
@@ -22,6 +23,7 @@ use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\ContactCreatedOrModified;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -71,7 +73,7 @@ class ContactController extends Controller
         if (empty($type) || ! in_array($type, $types)) {
             return redirect()->back();
         }
-
+        Log::info(json_encode (request()->all()));
         if (request()->ajax()) {
             if ($type == 'supplier') {
                 return $this->indexSupplier();
@@ -107,9 +109,7 @@ class ContactController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-
-        $contact = $this->contactUtil->getContactQuery($business_id, 'supplier');
-
+       $contact = $this->contactUtil->getContactQuery($business_id, 'supplier');
         if (request()->has('has_purchase_due')) {
             $contact->havingRaw('(total_purchase - purchase_paid) > 0');
         }
@@ -133,6 +133,9 @@ class ContactController extends Controller
         if (! empty(request()->input('assigned_to'))) {
             $contact->join('user_contact_access AS uc', 'contacts.id', 'uc.contact_id')
                 ->where('uc.user_id', request()->input('assigned_to'));
+        }
+        if (! empty(request()->input('custom_field1'))) {
+            $contact->where('contacts.custom_field1', request()->input('custom_field1'));
         }
 
         return Datatables::of($contact)
@@ -315,7 +318,9 @@ class ContactController extends Controller
             $query->join('user_contact_access AS uc', 'contacts.id', 'uc.contact_id')
                 ->where('uc.user_id', request()->input('assigned_to'));
         }
-
+        if (! empty(request()->input('custom_field1'))) {
+            $query->where('contacts.custom_field1', request()->input('custom_field1'));
+        }
         $has_no_sell_from = request()->input('has_no_sell_from', null);
 
         if (
@@ -582,6 +587,7 @@ class ContactController extends Controller
         }
 
         try {
+            Log::info(json_encode($request->all()));
             $business_id = $request->session()->get('user.business_id');
 
             if (! $this->moduleUtil->isSubscribed($business_id)) {

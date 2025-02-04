@@ -29,4 +29,8 @@ return [
     'stock_expiry_alert' => 'Stock Expiry Alert',
     'todays_profit' => "Today's profit",
     'dashboard' => 'Dashboard',
+    'overdue' => 'Overdue',
+    'due' => 'Due',
+    'total_due_amount' => 'Total Due Amount',
+    'invoicestatus' => 'Invoice Status'
 ];

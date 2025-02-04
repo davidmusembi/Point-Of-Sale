@@ -490,6 +490,9 @@ $(document).ready(function() {
                 if ($('#status_filter').length > 0) {
                     d.contact_status = $('#status_filter').val();
                 }
+                 if ($('#custom_field1_county').length > 0) {
+                    d.custom_field1 = $('#custom_field1_county').val();
+                }
             }
         },
         aaSorting: [[1, 'desc']],
@@ -517,7 +520,7 @@ $(document).ready(function() {
         contact_table.ajax.reload();
     });
 
-    $(document).on('change', '#has_no_sell_from, #cg_filter, #status_filter, #assigned_to', function(){
+    $(document).on('change', '#has_no_sell_from, #cg_filter, #status_filter, #assigned_to, #custom_field1_county', function(){
         contact_table.ajax.reload();
     });
 

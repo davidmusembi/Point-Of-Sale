@@ -16,7 +16,7 @@ return [
     'currency' => 'Currency',
     'currency_placeholder' => 'Select Currency',
     'upload_logo' => 'Upload Logo',
-    'country' => 'Country',
+    'country' => 'County',
     'state' => 'State',
     'city' => 'City',
     'zip_code' => 'Zip Code',

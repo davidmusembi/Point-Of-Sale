@@ -209,7 +209,67 @@
                       </div>
                   </div>
             </div>
-
+            <div class="col-md-3">
+            <div class="form-group">
+                    
+                {!! Form::label('custom_field1', __('business.country') . ':') !!} 
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-globe"></i>
+                    </span>
+                    <!-- {!! Form::text('country', null, ['class' => 'form-control', 'placeholder' => __('business.country')]); !!} -->
+                    {!! Form::select('custom_field1', [
+              'Baringo' => 'Baringo',
+              'Bomet' => 'Bomet',
+              'Bungoma' => 'Bungoma',
+              'Busia' => 'Busia',
+              'Elgeyo-Marakwet' => 'Elgeyo-Marakwet',
+              'Embu' => 'Embu',
+              'Garissa' => 'Garissa',
+              'Homa Bay' => 'Homa Bay',
+              'Isiolo' => 'Isiolo',
+              'Kajiado' => 'Kajiado',
+              'Kakamega' => 'Kakamega',
+              'Kericho' => 'Kericho',
+              'Kiambu' => 'Kiambu',
+              'Kilifi' => 'Kilifi',
+              'Kirinyaga' => 'Kirinyaga',
+              'Kisii' => 'Kisii',
+              'Kisumu' => 'Kisumu',
+              'Kitui' => 'Kitui',
+              'Kwale' => 'Kwale',
+              'Laikipia' => 'Laikipia',
+              'Lamu' => 'Lamu',
+              'Machakos' => 'Machakos',
+              'Makueni' => 'Makueni',
+              'Mandera' => 'Mandera',
+              'Meru' => 'Meru',
+              'Migori' => 'Migori',
+              'Marsabit' => 'Marsabit',
+              'Mombasa' => 'Mombasa',
+              'Murang\'a' => 'Murang\'a',
+              'Nairobi' => 'Nairobi',
+              'Nakuru' => 'Nakuru',
+              'Nandi' => 'Nandi',
+              'Narok' => 'Narok',
+              'Nyamira' => 'Nyamira',
+              'Nyandarua' => 'Nyandarua',
+              'Nyeri' => 'Nyeri',
+              'Samburu' => 'Samburu',
+              'Siaya' => 'Siaya',
+              'Taita-Taveta' => 'Taita-Taveta',
+              'Tana River' => 'Tana River',
+              'Tharaka-Nithi' => 'Tharaka-Nithi',
+              'Trans Nzoia' => 'Trans Nzoia',
+              'Turkana' => 'Turkana',
+              'Uasin Gishu' => 'Uasin Gishu',
+              'Vihiga' => 'Vihiga',
+              'Wajir' => 'Wajir',
+              'West Pokot' => 'West Pokot'
+          ], null, ['class' => 'form-control', 'placeholder' => __('messages.please_select')]); !!}
+                </div>
+            </div>
+          </div>
             <!-- User in create customer & supplier -->
             @if(config('constants.enable_contact_assign') && $type !== 'lead')
                 <div class="col-md-6">
@@ -328,17 +388,7 @@
                 </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="form-group">
-                {!! Form::label('country', __('business.country') . ':') !!}
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <i class="fa fa-globe"></i>
-                    </span>
-                    {!! Form::text('country', null, ['class' => 'form-control', 'placeholder' => __('business.country')]); !!}
-                </div>
-            </div>
-          </div>
+          
           <div class="col-md-3">
             <div class="form-group">
                 {!! Form::label('zip_code', __('business.zip_code') . ':') !!}
@@ -356,7 +406,7 @@
           <div class="col-md-12">
             <hr/>
           </div>
-          @php
+          <!-- @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
             $contact_custom_field1 = !empty($custom_labels['contact']['custom_field_1']) ? $custom_labels['contact']['custom_field_1'] : __('lang_v1.contact_custom_field1');
             $contact_custom_field2 = !empty($custom_labels['contact']['custom_field_2']) ? $custom_labels['contact']['custom_field_2'] : __('lang_v1.contact_custom_field2');
@@ -368,8 +418,8 @@
             $contact_custom_field8 = !empty($custom_labels['contact']['custom_field_8']) ? $custom_labels['contact']['custom_field_8'] : __('lang_v1.custom_field', ['number' => 8]);
             $contact_custom_field9 = !empty($custom_labels['contact']['custom_field_9']) ? $custom_labels['contact']['custom_field_9'] : __('lang_v1.custom_field', ['number' => 9]);
             $contact_custom_field10 = !empty($custom_labels['contact']['custom_field_10']) ? $custom_labels['contact']['custom_field_10'] : __('lang_v1.custom_field', ['number' => 10]);
-          @endphp
-          <div class="col-md-3">
+          @endphp -->
+          <!-- <div class="col-md-3">
             <div class="form-group">
                 {!! Form::label('custom_field1', $contact_custom_field1 . ':') !!}
                 {!! Form::text('custom_field1', null, ['class' => 'form-control', 
@@ -446,7 +496,7 @@
                     'placeholder' => __('lang_v1.search_address'), 'id' => 'shipping_address']); !!}
             <div class="mb-10" id="map"></div>
           </div>
-          @php
+          <!-- @php
                 $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
 
                 $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2']) ? $custom_labels['shipping']['custom_field_2'] : '';
@@ -456,7 +506,7 @@
                 $shipping_custom_label_4 = !empty($custom_labels['shipping']['custom_field_4']) ? $custom_labels['shipping']['custom_field_4'] : '';
 
                 $shipping_custom_label_5 = !empty($custom_labels['shipping']['custom_field_5']) ? $custom_labels['shipping']['custom_field_5'] : '';
-            @endphp
+            @endphp -->
 
             @if(!empty($custom_labels['shipping']['is_custom_field_1_contact_default']) && !empty($shipping_custom_label_1))
                 @php
@@ -517,7 +567,7 @@
                         {!! Form::text('shipping_custom_field_details[shipping_custom_field_5]', null, ['class' => 'form-control','placeholder' => $shipping_custom_label_5]); !!}
                     </div>
                 </div>
-            @endif
+            @endif -->
             @if(!empty($common_settings['is_enabled_export']))
                 <div class="col-md-12 mb-12">
                     <div class="form-check">
