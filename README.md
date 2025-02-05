@@ -91,7 +91,3 @@ Contributions are welcome! To contribute:
 ## License
 This project is open-source and available under the [MIT License](LICENSE).
 
-## Contact
-For inquiries or support, reach out to:
-- **Email:** your.email@example.com
-- **GitHub:** [Your GitHub Profile](https://github.com/davidmusembi)
