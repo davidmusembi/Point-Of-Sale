@@ -119,6 +119,7 @@ $(document).ready(function() {
         "footerCallback": function(row, data, start, end, display) {
             var api = this.api(), data;
             var invoice_due_total = 0;
+            var total_current = 0;
             var total_overdue = 0;
             var total_due= 0;
             var total_over_90 = 0;
@@ -128,6 +129,8 @@ $(document).ready(function() {
             var allData = api.rows({ page: 'all' }).data();
             //console.log(allData.length);
             for (var i = 0; i < allData.length; i++) {
+                var current = $(allData[i][1]).text();
+                total_current = parseFloat(current.replace(/[^0-9.-]+/g, ""));
             var invoice_due = $(allData[i][1]).text();
             invoice_due = parseFloat(invoice_due.replace(/[^0-9.-]+/g, ""));
              var over_due = $(allData[i][2]).text();
@@ -145,10 +148,12 @@ $(document).ready(function() {
             // Convert the summation to 2 decimal places
            
             $(sales_payment_dues_table.column(1).footer()).html(invoice_due_total.toFixed(2));
-            $(sales_payment_dues_table.column(2).footer()).html(total_overdue.toFixed(2));
-            $(sales_payment_dues_table.column(3).footer()).html(total_due.toFixed(2));
-            $(sales_payment_dues_table.column(4).footer()).html(total_over_90.toFixed(2));
-            $(sales_payment_dues_table.column(5).footer()).html(total_over_120.toFixed(2));
+            $(sales_payment_dues_table.column(2).footer()).html(total_current.toFixed(2));
+            $(sales_payment_dues_table.column(3).footer()).html(total_overdue.toFixed(2));
+            $(sales_payment_dues_table.column(4).footer()).html(total_due.toFixed(2));
+            $(sales_payment_dues_table.column(5).footer()).html(total_over_90.toFixed(2));
+            $(sales_payment_dues_table.column(6).footer()).html(total_over_120.toFixed(2));
+            
            
         }
 

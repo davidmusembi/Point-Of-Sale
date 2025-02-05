@@ -493,12 +493,13 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>@lang('contact.customer')</th>                                          
+                                                    <th>@lang('contact.customer')</th>  
+                                                    <th>Balance</th>                                       
                                                     <th>Current</th>
-                                                    <th>Over 30</th> 
-                                                    <th>Over 60</th> 
-                                                    <th>Over 90</th>
-                                                    <th>Over 120</th>
+                                                    <th>Over 30 Days</th> 
+                                                    <th>Over 60 Days</th> 
+                                                    <th>Over 90 Days</th>
+                                                    <th>Over 120 Days</th>
                                                     <th>@lang('messages.action')</th>
                                                 </tr>
                                             </thead>
@@ -508,6 +509,7 @@
                                                     <th ></th>
                                                     <th></th> 
                                                     <th></th> 
+                                                    <th></th>
                                               <th></th>
                                               <th></th>
                                               <th></th>

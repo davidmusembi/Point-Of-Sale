@@ -418,7 +418,7 @@ class HomeController extends Controller
                 ->where('transactions.payment_status', '!=', 'paid')
                 ->whereNotNull('transactions.pay_term_number')
                 ->whereNotNull('transactions.pay_term_type')
-                ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 7");
+                ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 365");
 
             //Check for permitted locations of a user
             $permitted_locations = auth()->user()->permitted_locations();
@@ -442,9 +442,12 @@ class HomeController extends Controller
                 ->groupBy('transactions.id');
             //->groupBy('c.id');
             //$t = $dues->groupby('supplier_business_name')->get()->toArray();
+            //$t = $dues->get();
+            //Log::info(json_encode($t->toArray()));
             $transactions = collect($dues->get()->toArray());
             $transformed = $transactions->map(
                 function ($item, $key) {
+                    $current =0;
                     $overdue = 0;
                     $due_amount = 0;
                     $over_120 = 0;
@@ -461,33 +464,47 @@ class HomeController extends Controller
                     } elseif ($days_lapsed > 30) {
                         $due_amount = $amount_owed;
                     }
+                    elseif($days_lapsed <30) {
+                        $current = $amount_owed;
+                    }
                     $item['overdue'] = $overdue;
                     $item['due'] = $due_amount;
                     $item['over_120'] = $over_120;
                     $item['over_90'] = $over_90;
                     $item['days_lapsed'] = $days_lapsed;
+                    $item['current'] = $current;
                     return $item;
                 }
             );
-            $grouped = $transformed->groupBy('supplier_business_name')
-                ->map(function ($item, $key) {
-                    $due_amount = $item->sum('final_total') - collect($item)->sum('total_paid');
-                    //$tr_date = Carbon::parse($]["tr_date"]);
-                    //Log::info(json_encode($item->toArray()));
-                    return [
-                        'id' => $item[0]["id"],
-                        'customer' => $item[0]["customer"],
-                        'final_total' => $item->sum('final_total'),
-                        'total_paid' => collect($item)->sum('total_paid'),
-                        'supplier_business_name' => $key,
-                        'due_amount' => '<span class="display_currency" data-currency_symbol="true">' . $due_amount . '</span>',
-                        'overdue' => '<span class="display_currency" data-currency_symbol="true">' . number_format($item->sum('overdue'), 2) . '</span>',
-                        'due' => '<span class="display_currency" data-currency_symbol="true">' . number_format($item->sum('due'), 2) . '</span>',
-                        'over_90' => '<span class="display_currency" data-currency_symbol="true">' . number_format($item->sum('over_90'), 2) . '</span>',
-                        'over_120' => '<span class="display_currency" data-currency_symbol="true">' . number_format($item->sum('over_120'), 2) . '</span>'
-
-                    ];
-                });
+       
+            $grouped_supplier_customer = $transformed->groupBy(function ($transaction) {
+                return $transaction['supplier_business_name'] . ' - ' . $transaction['customer'];
+            });
+            $grouped = $grouped_supplier_customer->map(function ($transactions, $keys) {
+                // Extract supplier_business_name and customer from the keys
+                //[$supplierBusinessName, $customer] = $keys;
+                // explode key to get customer and supplier
+                $customer = explode(' - ', $keys)[1];
+                $supplierBusinessName = explode(' - ', $keys)[0];
+                // Calculate the due amount
+                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid');
+                // Log::info(json_encode($keys));
+                return [
+                    'id' => $transactions->first()['id'],  // Use the ID of the first transaction in the group
+                    'customer' => $customer,
+                    'final_total' => $transactions->sum('final_total'),
+                    'total_paid' => $transactions->sum('total_paid'),
+                    'supplier_business_name' => $supplierBusinessName,
+                    'due_amount' => '<span class="display_currency" data-currency_symbol="true">' . number_format($due_amount, 2) . '</span>',
+                    'current' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('current'), 2) . '</span>',
+                    'overdue' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('overdue'), 2) . '</span>',
+                    'due' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('due'), 2) . '</span>',
+                    'over_90' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('over_90'), 2) . '</span>',
+                    'over_120' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('over_120'), 2) . '</span>',
+                ];
+            });
+            
+                
             //Log::info( json_encode($dues->get()->toArray()));  
             return Datatables::of($grouped)
                 // ->addColumn('due', function ($row) {
@@ -512,7 +529,7 @@ class HomeController extends Controller
                 ->removeColumn('final_total')
                 ->removeColumn('total_paid')
                 ->removeColumn('tr_date')
-                ->rawColumns([0, 1, 2, 3, 4, 5, 6])
+                ->rawColumns([0, 1, 2, 3, 4, 5, 6,7])
                 ->make(false);
         }
     }
