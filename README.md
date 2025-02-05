@@ -1,15 +1,97 @@
-## About Ultimate POS
+# Point of Sale (POS) System
 
-Ultimate POS is a POS application by [Ultimate Fosters](http://ultimatefosters.com), a brand of [The Web Fosters](http://thewebfosters.com).
+## Introduction
+This is a **Point of Sale (POS) System** built using Laravel, a PHP framework, designed to manage sales, inventory, and customers efficiently. The system provides a user-friendly interface for processing transactions, tracking stock levels, and generating sales reports.
 
-## Installation & Documentation
-You will find installation guide and documentation in the downloaded zip file.
-Also, For complete updated documentation of the ultimate pos please visit online [documentation guide](http://ultimatefosters.com/ultimate-pos/).
+## Features
+- **User Management** (Admins, Cashiers, Managers)
+- **Product & Inventory Management**
+- **Sales & Invoicing**
+- **Customer Management**
+- **Reports & Analytics**
+- **Discounts & Promotions**
+- **Multi-Payment Methods**
+- **Role-Based Access Control**
+- **Receipt Printing**
+- **Tax Management**
 
-## Security Vulnerabilities
+## Technologies Used
+- **Framework:** Laravel 10+
+- **Frontend:** Blade, Tailwind CSS, Vue.js 
+- **Database:** MySQL/PostgreSQL
+- **Authentication:** Laravel Breeze / Laravel Jetstream
+- **Payment Gateway:** Stripe, PesaPal 
+- **Server:** Apache / Nginx
 
-If you discover a security vulnerability within ultimate POS, please send an e-mail to support at thewebfosters@gmail.com. All security vulnerabilities will be promptly addressed.
+## Installation Guide
+### Prerequisites
+Ensure you have the following installed on your system:
+- PHP 8.1+
+- Composer
+- MySQL / PostgreSQL
+- Node.js & NPM (for frontend dependencies)
+- Laravel CLI
+
+### Steps to Install
+1. **Clone the Repository:**
+   ```sh
+   git clone https://github.com/davidmusembi/pos-system.git
+   cd pos-system
+   ```
+
+2. **Install Dependencies:**
+   ```sh
+   composer install
+   npm install && npm run dev
+   ```
+
+3. **Environment Setup:**
+   ```sh
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   - Configure your `.env` file with the correct database credentials.
+
+4. **Run Migrations & Seed Data:**
+   ```sh
+   php artisan migrate --seed
+   ```
+
+5. **Start the Application:**
+   ```sh
+   php artisan serve
+   ```
+
+6. **Access the POS System:**
+   Open your browser and navigate to:
+   ```
+   http://127.0.0.1:8000
+   ```
+
+## Usage
+- Admin can add products, manage users, and view reports.
+- Cashiers can process transactions, generate invoices, and print receipts.
+- Inventory is updated automatically after each sale.
+
+## API Endpoints (Optional)
+| Method | Endpoint             | Description              |
+|--------|----------------------|--------------------------|
+| GET    | /api/products        | Get all products         |
+| POST   | /api/sales           | Create a new sale        |
+| GET    | /api/reports/sales   | Get sales report        |
+
+## Contribution
+Contributions are welcome! To contribute:
+1. Fork the repository
+2. Create a new branch (`feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to your branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
 
 ## License
+This project is open-source and available under the [MIT License](LICENSE).
 
-The Ultimate POS software is licensed under the [Codecanyon license](https://codecanyon.net/licenses/standard).
+## Contact
+For inquiries or support, reach out to:
+- **Email:** your.email@example.com
+- **GitHub:** [Your GitHub Profile](https://github.com/davidmusembi)
