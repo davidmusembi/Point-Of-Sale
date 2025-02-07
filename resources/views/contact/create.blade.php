@@ -496,7 +496,7 @@
                     'placeholder' => __('lang_v1.search_address'), 'id' => 'shipping_address']); !!}
             <div class="mb-10" id="map"></div>
           </div>
-          <!-- @php
+           @php
                 $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
 
                 $shipping_custom_label_2 = !empty($custom_labels['shipping']['custom_field_2']) ? $custom_labels['shipping']['custom_field_2'] : '';
@@ -567,7 +567,7 @@
                         {!! Form::text('shipping_custom_field_details[shipping_custom_field_5]', null, ['class' => 'form-control','placeholder' => $shipping_custom_label_5]); !!}
                     </div>
                 </div>
-            @endif -->
+            @endif 
             @if(!empty($common_settings['is_enabled_export']))
                 <div class="col-md-12 mb-12">
                     <div class="form-check">

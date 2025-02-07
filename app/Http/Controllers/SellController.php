@@ -178,6 +178,9 @@ class SellController extends Controller
                     ->whereNotNull('transactions.pay_term_type')
                     ->whereRaw("IF(transactions.pay_term_type='days', DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number DAY) < CURDATE(), DATE_ADD(transactions.transaction_date, INTERVAL transactions.pay_term_number MONTH) < CURDATE())");
             }
+            if (! empty(request()->input('custom_field1'))) {
+                $sells->where('contacts.custom_field1', request()->input('custom_field1'));
+            }
 
             //Add condition for location,used in sales representative expense report
             if (request()->has('location_id')) {

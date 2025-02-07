@@ -170,6 +170,7 @@
                         d.created_by = $('#created_by').val();
                         d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
                         d.service_staffs = $('#service_staffs').val();
+                        d.custom_field1 = $('#custom_field1_county').val();
 
                         if ($('#shipping_status').length) {
                             d.shipping_status = $('#shipping_status').val();
@@ -364,7 +365,7 @@ createdRow: function(row, data, dataIndex) {
             });
 
             $(document).on('change',
-                '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method',
+                '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method,#custom_field1_county',
                 function() {
                     sell_table.ajax.reload();
                 });
