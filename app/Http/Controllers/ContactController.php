@@ -370,7 +370,7 @@ class ContactController extends Controller
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
             ->addColumn(
                 'due',
-                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount)</span>'
+                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return)</span>'
             )
             ->addColumn(
                 'return_due',

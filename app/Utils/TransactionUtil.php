@@ -4122,7 +4122,7 @@ class TransactionUtil extends Util
 
         $curr_due = $final_total - $curr_total_payment;
 
-        $total_due = $total_invoice - $invoice_paid + $curr_due;
+        $total_due = $total_invoice - $invoice_paid + $curr_due - $credit_details->total_sell_return;
 
         if ($total_due <= $credit_limit) {
             return false;

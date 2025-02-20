@@ -71,7 +71,7 @@
                 <div class="form-group">
                     <label for="custom_field1_county">@lang('County'):</label>
                     {!! Form::select('custom_field1_county', [
-              'Baringo' => 'Baringo',
+                        'Baringo' => 'Baringo',
               'Bomet' => 'Bomet',
               'Bungoma' => 'Bungoma',
               'Busia' => 'Busia',
@@ -84,14 +84,12 @@
               'Kakamega' => 'Kakamega',
               'Kericho' => 'Kericho',
               'Kiambu' => 'Kiambu',
-              'Kilifi' => 'Kilifi',
+              'Coastal' => 'Coastal',
               'Kirinyaga' => 'Kirinyaga',
               'Kisii' => 'Kisii',
               'Kisumu' => 'Kisumu',
-              'Kitui' => 'Kitui',
-              'Kwale' => 'Kwale',
+              'Kitui' => 'Kitui',       
               'Laikipia' => 'Laikipia',
-              'Lamu' => 'Lamu',
               'Machakos' => 'Machakos',
               'Makueni' => 'Makueni',
               'Mandera' => 'Mandera',
@@ -109,7 +107,6 @@
               'Nyeri' => 'Nyeri',
               'Samburu' => 'Samburu',
               'Siaya' => 'Siaya',
-              'Taita-Taveta' => 'Taita-Taveta',
               'Tana River' => 'Tana River',
               'Tharaka-Nithi' => 'Tharaka-Nithi',
               'Trans Nzoia' => 'Trans Nzoia',

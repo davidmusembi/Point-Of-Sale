@@ -487,7 +487,7 @@ class HomeController extends Controller
                 $customer = explode(' - ', $keys)[1];
                 $supplierBusinessName = explode(' - ', $keys)[0];
                 // Calculate the due amount
-                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid');
+                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid') - $transactions->sum('total_sell_return_inc_tax');
                 // Log::info(json_encode($keys));
                 return [
                     'id' => $transactions->first()['id'],  // Use the ID of the first transaction in the group
@@ -505,7 +505,7 @@ class HomeController extends Controller
             });
             
                 
-            //Log::info( json_encode($dues->get()->toArray()));  
+           // Log::info( json_encode($dues->get()->toArray()));  
             return Datatables::of($grouped)
                 // ->addColumn('due', function ($row) {
                 //     // $total_paid = ! empty($row->total_paid) ? $row->total_paid : 0;
