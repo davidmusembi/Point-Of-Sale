@@ -414,11 +414,12 @@ class HomeController extends Controller
                     'tp.transaction_id'
                 )
                 ->where('transactions.business_id', $business_id)
-                ->where('transactions.type', 'sell')
+                ->where('transactions.type' , 'sell')
                 ->where('transactions.payment_status', '!=', 'paid')
-                ->whereNotNull('transactions.pay_term_number')
-                ->whereNotNull('transactions.pay_term_type')
-                ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 365");
+                ->where('transactions.status', 'final');
+                // ->whereNotNull('transactions.pay_term_number')
+                // ->whereNotNull('transactions.pay_term_type')
+                // ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 365");
 
             //Check for permitted locations of a user
             $permitted_locations = auth()->user()->permitted_locations();
@@ -434,16 +435,15 @@ class HomeController extends Controller
                 'transactions.id as id',
                 'c.name as customer',
                 'transactions.transaction_date as  tr_date',
+                 'c.id as contact_id',
                 ///transactions.invoice_no',
                 'final_total',
                 DB::raw('SUM(tp.amount) as total_paid'),
-                DB::raw('coalesce(c.supplier_business_name,c.name) as supplier_business_name')
+                DB::raw('coalesce(c.supplier_business_name,c.name) as supplier_business_name'),
+                //DB::raw("SUM(IF(transactions.type = 'sell_return', final_total, 0)) as total_sell_return")
             )
                 ->groupBy('transactions.id');
-            //->groupBy('c.id');
-            //$t = $dues->groupby('supplier_business_name')->get()->toArray();
-            //$t = $dues->get();
-            //Log::info(json_encode($t->toArray()));
+            
             $transactions = collect($dues->get()->toArray());
             $transformed = $transactions->map(
                 function ($item, $key) {
@@ -452,7 +452,9 @@ class HomeController extends Controller
                     $due_amount = 0;
                     $over_120 = 0;
                     $over_90 = 0;
-                    $amount_owed = $item['final_total'] - $item['total_paid'];
+                    $paid_sale_return = Transaction::where('type','sell_return')->where('contact_id',$item['contact_id'])->where('payment_status','paid')->sum('final_total');
+                    $sales_return = Transaction::where('type','sell_return')->where('return_parent_id',$item['id'])->sum('final_total');
+                    $amount_owed = $item['final_total'] - $item['total_paid'] - $sales_return;
                     $tr_date = Carbon::parse($item['tr_date']);
                     $days_lapsed = $tr_date->diffInDays(Carbon::now());
                     if ($days_lapsed > 120) {
@@ -467,6 +469,8 @@ class HomeController extends Controller
                     elseif($days_lapsed <30) {
                         $current = $amount_owed;
                     }
+                    $item["paid_returns"] = isset($paid_sale_return) ? $paid_sale_return : 0;
+                    $item["sale_return"] = $sales_return;
                     $item['overdue'] = $overdue;
                     $item['due'] = $due_amount;
                     $item['over_120'] = $over_120;
@@ -476,7 +480,9 @@ class HomeController extends Controller
                     return $item;
                 }
             );
-       
+            $transformed = $transformed->filter(function ($transaction) {
+                return $transaction['current'] > 0 || $transaction['overdue'] > 0 || $transaction['due'] > 0 || $transaction['over_90'] > 0 || $transaction['over_120'] > 0;
+            });
             $grouped_supplier_customer = $transformed->groupBy(function ($transaction) {
                 return $transaction['supplier_business_name'] . ' - ' . $transaction['customer'];
             });
@@ -484,10 +490,13 @@ class HomeController extends Controller
                 // Extract supplier_business_name and customer from the keys
                 //[$supplierBusinessName, $customer] = $keys;
                 // explode key to get customer and supplier
+                Log::info(json_encode($transactions));
                 $customer = explode(' - ', $keys)[1];
                 $supplierBusinessName = explode(' - ', $keys)[0];
+                $contact_id = $transactions->first()['contact_id'];
                 // Calculate the due amount
-                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid') - $transactions->sum('total_sell_return_inc_tax');
+                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid') - $transactions->sum('sale_return');
+                
                 // Log::info(json_encode($keys));
                 return [
                     'id' => $transactions->first()['id'],  // Use the ID of the first transaction in the group

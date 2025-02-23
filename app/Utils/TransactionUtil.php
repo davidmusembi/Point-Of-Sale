@@ -4122,7 +4122,7 @@ class TransactionUtil extends Util
 
         $curr_due = $final_total - $curr_total_payment;
 
-        $total_due = $total_invoice - $invoice_paid + $curr_due - $credit_details->total_sell_return;
+        $total_due = $total_invoice - $invoice_paid + $curr_due;
 
         if ($total_due <= $credit_limit) {
             return false;
@@ -5265,9 +5265,9 @@ class TransactionUtil extends Util
             }
 
             //Hide all the adjusted payments because it has already been summed as advance payment
-            if (! empty($payment->parent_id)) {
-                continue;
-            }
+            // if (! empty($payment->parent_id)) {
+            //     continue;
+            // }
 
             $ref_no = in_array($payment->transaction_type, ['sell', 'sell_return']) ? $payment->invoice_no : $payment->ref_no;
             $note = $payment->note;

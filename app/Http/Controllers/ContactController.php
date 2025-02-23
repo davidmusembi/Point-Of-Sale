@@ -293,13 +293,16 @@ class ContactController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-
+ 
         $is_admin = $this->contactUtil->is_admin(auth()->user());
 
         $query = $this->contactUtil->getContactQuery($business_id, 'customer');
+   
 
         if (request()->has('has_sell_due')) {
+            $test = collect($query->get()->toArray())->where('contact_id','CO0192')->toArray();
             $query->havingRaw('(total_invoice - invoice_received) > 0');
+            Log::info(json_encode($test));
         }
 
         if (request()->has('has_sell_return')) {
@@ -365,7 +368,6 @@ class ContactController extends Controller
         if (! empty(request()->input('contact_status'))) {
             $query->where('contacts.contact_status', request()->input('contact_status'));
         }
-
         $contacts = Datatables::of($query)
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
             ->addColumn(
@@ -587,7 +589,7 @@ class ContactController extends Controller
         }
 
         try {
-            Log::info(json_encode($request->all()));
+           // Log::info(json_encode($request->all()));
             $business_id = $request->session()->get('user.business_id');
 
             if (! $this->moduleUtil->isSubscribed($business_id)) {
