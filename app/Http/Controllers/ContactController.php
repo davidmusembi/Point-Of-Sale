@@ -300,9 +300,8 @@ class ContactController extends Controller
    
 
         if (request()->has('has_sell_due')) {
-            $test = collect($query->get()->toArray())->where('contact_id','CO0192')->toArray();
-            $query->havingRaw('(total_invoice - invoice_received) > 0');
-            Log::info(json_encode($test));
+            $query->havingRaw('(total_invoice - invoice_received - total_sell_return + sell_return_paid) > 0');
+           //Log::info(json_encode($query->get()->toArray()));
         }
 
         if (request()->has('has_sell_return')) {
@@ -372,11 +371,11 @@ class ContactController extends Controller
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
             ->addColumn(
                 'due',
-                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return)</span>'
+                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return + $sell_return_paid}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return + $sell_return_paid)</span>'
             )
             ->addColumn(
                 'return_due',
-                '<span class="return_due" data-orig-value="{{$total_sell_return - $sell_return_paid}}" data-highlight=false>@format_currency($total_sell_return - $sell_return_paid)</span>'
+                '<span class="return_due" data-orig-value="{{$total_sell_return - $sell_return_paid }}" data-highlight=false>@format_currency($total_sell_return - $sell_return_paid)</span>'
             )
             ->addColumn(
                 'action',

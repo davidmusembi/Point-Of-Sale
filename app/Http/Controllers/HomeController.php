@@ -445,6 +445,7 @@ class HomeController extends Controller
                 ->groupBy('transactions.id');
             
             $transactions = collect($dues->get()->toArray());
+            //Log::info(json_encode($transactions));
             $transformed = $transactions->map(
                 function ($item, $key) {
                     $current =0;
