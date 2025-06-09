@@ -417,6 +417,7 @@ class HomeController extends Controller
                 ->where('transactions.type' , 'sell')
                 ->where('transactions.payment_status', '!=', 'paid')
                 ->where('transactions.status', 'final');
+                //->where('c.contact_id', 'CO0050');
                 // ->whereNotNull('transactions.pay_term_number')
                 // ->whereNotNull('transactions.pay_term_type')
                 // ->whereRaw("DATEDIFF( DATE_ADD( transaction_date, INTERVAL IF(transactions.pay_term_type = 'days', transactions.pay_term_number, 30 * transactions.pay_term_number) DAY), '$today') <= 365");
@@ -443,32 +444,90 @@ class HomeController extends Controller
                 //DB::raw("SUM(IF(transactions.type = 'sell_return', final_total, 0)) as total_sell_return")
             )
                 ->groupBy('transactions.id');
-            
+            $sale_return_on_paid_sales = DB::table('transactions as t')
+            ->select([
+                't.final_total as return_amount',
+                't.transaction_date',
+                't.return_parent_id',
+                't.contact_id',
+                't.final_total as remaining_credit',
+            ])
+            ->where('t.type', 'sell_return')
+            ->whereRaw("(SELECT t2.payment_status FROM transactions t2 WHERE t2.id = t.return_parent_id) = 'paid'")
+            // ->where('t.contact_id', 140) 
+            ->get();
+                                    
             $transactions = collect($dues->get()->toArray());
-            //Log::info(json_encode($transactions));
-            $transformed = $transactions->map(
-                function ($item, $key) {
+            
+            
+
+            //Log::info(json_encode($transactions,JSON_PRETTY_PRINT));
+            //Log::info('paid_sales_retun: ' . json_encode($sale_return_on_paid_sales->toArray(),JSON_PRETTY_PRINT));
+
+            $transformed = $transactions->groupBy('contact_id')->flatMap(
+                function($customer_transactions,$contact_id) use($sale_return_on_paid_sales){
+                    $credit = $sale_return_on_paid_sales
+                    ->where('contact_id', $contact_id)
+                    ->sum('remaining_credit');
+                $initial_credit = $credit;
+                //Log::info(json_encode($customer_transactions,JSON_PRETTY_PRINT));
+                return $customer_transactions->sortByDesc('tr_date')->map(
+                function ($item, $key) use (&$credit) {
                     $current =0;
                     $overdue = 0;
                     $due_amount = 0;
                     $over_120 = 0;
                     $over_90 = 0;
+                    $apply_over_120 =0;
+                    $apply_over_90 = 0;
+                    $apply_overdue = 0;
+                    $apply_due =0;
+                    $apply_current =0;
+
+                    $amount_paid  = $item['total_paid'] ?? 0;
+                   // Log::info("amount_paid:".$amount_paid);
+                    $item['paid_amount'] = $amount_paid;
                     $paid_sale_return = Transaction::where('type','sell_return')->where('contact_id',$item['contact_id'])->where('payment_status','paid')->sum('final_total');
                     $sales_return = Transaction::where('type','sell_return')->where('return_parent_id',$item['id'])->sum('final_total');
-                    $amount_owed = $item['final_total'] - $item['total_paid'] - $sales_return;
+                    //$amount_owed = $item['final_total'];
+                    $amount_owed = $item['final_total'] - $amount_paid - $sales_return;
+                    
                     $tr_date = Carbon::parse($item['tr_date']);
+
                     $days_lapsed = $tr_date->diffInDays(Carbon::now());
-                    if ($days_lapsed > 120) {
+                    if ($days_lapsed >= 120) {
                         $over_120 = $amount_owed;
-                    } elseif ($days_lapsed > 90) {
+                    } elseif ($days_lapsed >= 90) {
                         $over_90 = $amount_owed;
-                    } elseif ($days_lapsed > 60) {
+                    } elseif ($days_lapsed >= 60) {
                         $overdue = $amount_owed;
-                    } elseif ($days_lapsed > 30) {
+                    } elseif ($days_lapsed >= 30) {
                         $due_amount = $amount_owed;
                     }
-                    elseif($days_lapsed <30) {
+                    elseif($days_lapsed <=30) {
                         $current = $amount_owed;
+                    }
+                    if($credit > 0){
+                    //$credit = $credit - 100;
+                    $apply_over_120 = min($credit, $over_120);
+                    $credit -= $apply_over_120;
+                    $over_120 -= $apply_over_120;
+
+                    $apply_over_90 = min($credit, $over_90);
+                    $credit -= $apply_over_90;
+                    $over_90 -= $apply_over_90;
+                
+                    $apply_overdue = min($credit, $overdue);
+                    $credit -= $apply_overdue;
+                    $overdue -= $apply_overdue;
+                
+                    $apply_due = min($credit, $due_amount);
+                    $credit -= $apply_due;
+                    $due_amount -= $apply_due;
+                
+                    $apply_current = min($credit, $current);
+                    $credit -= $apply_current;
+                    $current -= $apply_current;
                     }
                     $item["paid_returns"] = isset($paid_sale_return) ? $paid_sale_return : 0;
                     $item["sale_return"] = $sales_return;
@@ -478,12 +537,25 @@ class HomeController extends Controller
                     $item['over_90'] = $over_90;
                     $item['days_lapsed'] = $days_lapsed;
                     $item['current'] = $current;
+                    $item['credit_applied'] = [
+                        'over_120' => $apply_over_120,
+                        'over_90' => $apply_over_90,
+                        'overdue' => $apply_overdue,
+                        'due' => $apply_due,
+                        'current' => $apply_current,
+                    ];
+                    //update remaining credit on 
+                    $item['remaining_credit'] = $credit;
                     return $item;
-                }
-            );
-            $transformed = $transformed->filter(function ($transaction) {
-                return $transaction['current'] > 0 || $transaction['overdue'] > 0 || $transaction['due'] > 0 || $transaction['over_90'] > 0 || $transaction['over_120'] > 0;
+                });
             });
+            // order by day lapsed and customer name
+            //$transformed = $transformed->sortByDesc('tr_date')->sortBy('contact_id');
+            Log::info(json_encode($transformed,JSON_PRETTY_PRINT));
+        
+            // $transformed = $transformed->filter(function ($transaction) {
+            //     return $transaction['current'] > 0 || $transaction['overdue'] > 0 || $transaction['due'] > 0 || $transaction['over_90'] > 0 || $transaction['over_120'] > 0;
+            // });
             $grouped_supplier_customer = $transformed->groupBy(function ($transaction) {
                 return $transaction['supplier_business_name'] . ' - ' . $transaction['customer'];
             });
@@ -491,13 +563,18 @@ class HomeController extends Controller
                 // Extract supplier_business_name and customer from the keys
                 //[$supplierBusinessName, $customer] = $keys;
                 // explode key to get customer and supplier
-                Log::info(json_encode($transactions));
+               // Log::info(json_encode($transactions));
                 $customer = explode(' - ', $keys)[1];
                 $supplierBusinessName = explode(' - ', $keys)[0];
                 $contact_id = $transactions->first()['contact_id'];
+                $total_credits_applied = array_sum(array_map(function ($transaction) {
+                    return array_sum($transaction['credit_applied']);
+                }, $transactions->toArray()));
                 // Calculate the due amount
-                $due_amount = $transactions->sum('final_total') - $transactions->sum('total_paid') - $transactions->sum('sale_return');
-                
+                //Log::info(json_encode($total_credits_applied));
+                $due_amount = $transactions->sum('current') + $transactions->sum('due') + $transactions->sum('overdue') + $transactions->sum('over_90') + $transactions->sum('over_120');
+                //$due_amount =  $transactions->sum('final_total');  - $transactions->sum('total_paid') - $transactions->sum('sale_return');
+                ///$due_amount = $due_amount  - $total_credits_applied;
                 // Log::info(json_encode($keys));
                 return [
                     'id' => $transactions->first()['id'],  // Use the ID of the first transaction in the group
@@ -513,7 +590,9 @@ class HomeController extends Controller
                     'over_120' => '<span class="display_currency" data-currency_symbol="true">' . number_format($transactions->sum('over_120'), 2) . '</span>',
                 ];
             });
-            
+            $grouped = $grouped->filter(function ($transaction) {
+                return strip_tags($transaction['due_amount']) > 0;
+            });
                 
            // Log::info( json_encode($dues->get()->toArray()));  
             return Datatables::of($grouped)

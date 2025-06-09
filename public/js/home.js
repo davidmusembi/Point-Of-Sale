@@ -118,45 +118,48 @@ $(document).ready(function() {
         },
         "footerCallback": function(row, data, start, end, display) {
             var api = this.api(), data;
-            var invoice_due_total = 0;
+            var total_due_amount = 0;
             var total_current = 0;
             var total_overdue = 0;
-            var total_due= 0;
+            var total_due = 0;
             var total_over_90 = 0;
             var total_over_120 = 0;
-
+        
             // Get the data of all the pages
             var allData = api.rows({ page: 'all' }).data();
-            //console.log(allData.length);
-            for (var i = 0; i < allData.length; i++) {
-                var current = $(allData[i][1]).text();
-                total_current = parseFloat(current.replace(/[^0-9.-]+/g, ""));
-            var invoice_due = $(allData[i][1]).text();
-            invoice_due = parseFloat(invoice_due.replace(/[^0-9.-]+/g, ""));
-             var over_due = $(allData[i][2]).text();
-             total_overdue += parseFloat(over_due.replace(/[^0-9.-]+/g, ""));
-             var due = $(allData[i][3]).text();
-             total_due += parseFloat(due.replace(/[^0-9.-]+/g, ""));
-             var over_90 = $(allData[i][4]).text();
-             total_over_90 += parseFloat(over_90.replace(/[^0-9.-]+/g, ""));
-             var over_120 = $(allData[i][5]).text();
-             total_over_120 += parseFloat(over_120.replace(/[^0-9.-]+/g, ""));
-            //console.log(invoice_due);
-            invoice_due_total += invoice_due;
-            }
-
-            // Convert the summation to 2 decimal places
-           
-            $(sales_payment_dues_table.column(1).footer()).html(invoice_due_total.toFixed(2));
-            $(sales_payment_dues_table.column(2).footer()).html(total_current.toFixed(2));
-            $(sales_payment_dues_table.column(3).footer()).html(total_overdue.toFixed(2));
-            $(sales_payment_dues_table.column(4).footer()).html(total_due.toFixed(2));
-            $(sales_payment_dues_table.column(5).footer()).html(total_over_90.toFixed(2));
-            $(sales_payment_dues_table.column(6).footer()).html(total_over_120.toFixed(2));
             
-           
+            for (var i = 0; i < allData.length; i++) {
+                // Extract numeric values from the HTML strings
+                var due_amount = $(allData[i][1]).text();
+                total_due_amount += parseFloat(due_amount.replace(/[^0-9.-]+/g, ""));
+                
+                var current = $(allData[i][2]).text();
+                total_current += parseFloat(current.replace(/[^0-9.-]+/g, ""));
+                
+                var overdue = $(allData[i][3]).text();
+                total_overdue += parseFloat(overdue.replace(/[^0-9.-]+/g, ""));
+                
+                var due = $(allData[i][4]).text();
+                total_due += parseFloat(due.replace(/[^0-9.-]+/g, ""));
+                
+                var over_90 = $(allData[i][5]).text();
+                total_over_90 += parseFloat(over_90.replace(/[^0-9.-]+/g, ""));
+                
+                var over_120 = $(allData[i][6]).text();
+                total_over_120 += parseFloat(over_120.replace(/[^0-9.-]+/g, ""));
+            }
+        
+            // Convert the summation to 2 decimal places and display in footer
+            $(sales_payment_dues_table.column(1).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_due_amount.toFixed(2) + '</span>');
+            $(sales_payment_dues_table.column(2).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_current.toFixed(2) + '</span>');
+            $(sales_payment_dues_table.column(3).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_overdue.toFixed(2) + '</span>');
+            $(sales_payment_dues_table.column(4).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_due.toFixed(2) + '</span>');
+            $(sales_payment_dues_table.column(5).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_over_90.toFixed(2) + '</span>');
+            $(sales_payment_dues_table.column(6).footer()).html('<span class="display_currency" data-currency_symbol="true">' + total_over_120.toFixed(2) + '</span>');
+            
+            // Apply currency conversion to footer
+            __currency_convert_recursively($('#sales_payment_dues_table tfoot'));
         }
-
     });
 
 
