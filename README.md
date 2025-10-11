@@ -79,55 +79,6 @@ You'll see:
 
 ---
 
-## 🏢 COMPANY CONFIGURATION
-
-### Step 1: Access Company Settings
-
-1. Click **Profile Icon** (top right)
-2. Select **"Settings"**
-3. You'll see **4 tabs**: Company, Features, Notifications, Security
-
-### Step 2: Configure Company Details
-
-Click **"Company"** tab and fill in:
-
-```
-Company Name: Aqua Fresco Water Company
-Email: info@aquafresco.com
-Phone: +254 712 345 678
-Address: 123 Industrial Area, Nairobi, Kenya
-GST Number: 29ABCDE1234F1Z5 (your actual GST number)
-Financial Year Start: 2025-01-01
-Books Start Date: 2025-01-01
-```
-
-Click **"Save Company Settings"**
-✅ Success: "Company settings updated successfully"
-
-### Step 3: Enable Features
-
-Click **"Features"** tab and enable:
-
-- ✅ Enable Inventory
-- ✅ Enable Multi-Warehouse
-- ✅ Enable Manufacturing
-- ✅ Enable BOM
-- ✅ Enable POS
-- ✅ Enable GST
-
-Each toggle will show a toast message when changed.
-
-### Step 4: Configure Notification Preferences
-
-Click **"Notifications"** tab:
-
-- ✅ Low Stock Alerts
-- ✅ Payment Reminders
-- ✅ Production Updates
-
-Click **"Save Notification Settings"**
-
----
 
 ## 👥 USER MANAGEMENT
 
