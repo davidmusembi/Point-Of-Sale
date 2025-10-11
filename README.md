@@ -34,7 +34,7 @@
 
 ```
 Username: admin
-Password: admin123
+Password: qwerty
 ```
 
 3. Click **"Sign in"** button
