@@ -39,30 +39,26 @@ Ensure you have the following installed on your system:
    cd pos-system
    ```
 
-2. **Install Dependencies:**
-   ```sh
-   composer install
-   npm install && npm run dev
-   ```
 
-3. **Environment Setup:**
+
+2. **Environment Setup:**
    ```sh
    cp .env.example .env
    php artisan key:generate
    ```
    - Configure your `.env` file with the correct database credentials.
 
-4. **Run Migrations & Seed Data:**
+3. **Run Migrations & Seed Data:**
    ```sh
    php artisan migrate --seed
    ```
 
-5. **Start the Application:**
+4. **Start the Application:**
    ```sh
    php artisan serve
    ```
 
-6. **Access the POS System:**
+5. **Access the POS System:**
    Open your browser and navigate to:
    ```
    http://127.0.0.1:8000
@@ -73,12 +69,7 @@ Ensure you have the following installed on your system:
 - Cashiers can process transactions, generate invoices, and print receipts.
 - Inventory is updated automatically after each sale.
 
-## API Endpoints (Optional)
-| Method | Endpoint             | Description              |
-|--------|----------------------|--------------------------|
-| GET    | /api/products        | Get all products         |
-| POST   | /api/sales           | Create a new sale        |
-| GET    | /api/reports/sales   | Get sales report        |
+
 
 ## Contribution
 Contributions are welcome! To contribute:

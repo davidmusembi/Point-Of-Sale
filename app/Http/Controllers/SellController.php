@@ -26,6 +26,7 @@ use App\Warranty;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -95,7 +96,7 @@ class SellController extends Controller
 
             $sale_type = ! empty(request()->input('sale_type')) ? request()->input('sale_type') : 'sell';
 
-            $sells = $this->transactionUtil->getListSells($business_id, $sale_type);
+            $sells = $this->transactionUtil->getListSells($business_id, $sale_type);            ;
 
             // only display sell invoice we add it because project invoive show in sell list
             if($sale_type == 'sell'){
@@ -304,7 +305,6 @@ class SellController extends Controller
             }
 
             $sells->groupBy('transactions.id');
-
             if (! empty(request()->suspended)) {
                 $transaction_sub_type = request()->get('transaction_sub_type');
                 if (! empty($transaction_sub_type)) {
@@ -349,6 +349,8 @@ class SellController extends Controller
             if ($this->businessUtil->isModuleEnabled('subscription')) {
                 $sells->addSelect('transactions.is_recurring', 'transactions.recur_parent_id');
             }
+            Log::info('business_id: '.$business_id);
+            Log::info('Sells Query: '.$sells->toSql());
             $sales_order_statuses = Transaction::sales_order_statuses();
             $datatable = Datatables::of($sells)
                 ->addColumn(

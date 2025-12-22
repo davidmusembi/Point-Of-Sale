@@ -27,7 +27,7 @@ use App\VariationLocationDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\CashRegister;
-
+use Illuminate\Support\Facades\Log;
 
 class TransactionUtil extends Util
 {
@@ -5006,6 +5006,7 @@ class TransactionUtil extends Util
      */
     public function getListSells($business_id, $sale_type = 'sell')
     {
+
         $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
                 // ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
                 ->leftJoin('transaction_sell_lines as tsl', function ($join) {
@@ -5093,11 +5094,9 @@ class TransactionUtil extends Util
                     'transactions.is_export',
                     DB::raw("CONCAT(COALESCE(dp.surname, ''),' ',COALESCE(dp.first_name, ''),' ',COALESCE(dp.last_name,'')) as delivery_person")
                 );
-
         if ($sale_type == 'sell') {
             $sells->where('transactions.status', 'final');
         }
-
         return $sells;
     }
 

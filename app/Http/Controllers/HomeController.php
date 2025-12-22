@@ -228,6 +228,15 @@ class HomeController extends Controller
             $location_id = request()->location_id;
             $business_id = request()->session()->get('user.business_id');
 
+            // Handle weekly filter - ADD THIS SECTION
+        if (request()->has('filter_type') && request()->filter_type === 'weekly') {
+            // Calculate last week's Monday to Sunday
+            $lastWeekStart = \Carbon::now()->previous(\Carbon::MONDAY)->format('Y-m-d');
+            $lastWeekEnd = \Carbon::now()->previous(\Carbon::MONDAY)->addDays(6)->format('Y-m-d');
+            
+            $start = $lastWeekStart;
+            $end = $lastWeekEnd;
+        }
             // get user id parameter
             $created_by = request()->user_id;
 
