@@ -33,7 +33,7 @@ $(document).ready(function() {
         serverSide: true,
         ordering: false,
         searching: false,
-        scrollY:        "75vh",
+        scrollY:      "75vh",
         scrollX:        true,
         scrollCollapse: true,
         fixedHeader: false,
