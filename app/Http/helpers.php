@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * boots pos.
  */
@@ -9,7 +11,7 @@ function pos_boot($ul, $pt, $lc, $em, $un, $type = 1, $pid = null)
     $request_url = ($type == 1) ? base64_decode(config('author.lic1')) : base64_decode(config('author.lic2'));
 
     $pid = is_null($pid) ? config('author.pid') : $pid;
-
+    Log::info('POS Boot - '.$request_url);
     $curlConfig = [CURLOPT_URL => $request_url,
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
