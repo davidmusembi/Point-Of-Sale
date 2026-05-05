@@ -71,7 +71,8 @@ class AuthController extends BaseController
             'branchName' => $user->business->name ?? 'Main Branch',
             'isActive' => (bool)$user->allow_login,
             'twoFactorEnabled' => false, // Placeholder
-            'autoLockSeconds' => 1800
+            'autoLockSeconds' => 1800,
+            'permittedLocations' => $user->permitted_locations()
         ];
     }
 }

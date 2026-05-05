@@ -31,6 +31,7 @@ Route::prefix('v1')->middleware('api.logger')->group(function () {
         Route::get('/products', [App\Http\Controllers\Api\V1\ProductController::class, 'index']);
         Route::get('/products/{id}', [App\Http\Controllers\Api\V1\ProductController::class, 'show'])->where('id', '[0-9]+');
         Route::get('/products/barcode/{barcode}', [App\Http\Controllers\Api\V1\ProductController::class, 'showByBarcode']);
+        Route::get('/categories', [App\Http\Controllers\Api\V1\CategoryController::class, 'index']);
 
         // Settings
         Route::get('/settings', [App\Http\Controllers\Api\V1\SettingController::class, 'index']);
