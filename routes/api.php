@@ -47,10 +47,24 @@ Route::prefix('v1')->middleware('api.logger')->group(function () {
         Route::get('/dashboard/recent-transactions', [App\Http\Controllers\Api\V1\DashboardController::class, 'recentTransactions']);
 
         // Reports
+        Route::get('/reports/profit-loss', [\App\Http\Controllers\Api\V1\ReportController::class, 'getProfitLoss']);
+        Route::get('/reports/purchase-sell', [\App\Http\Controllers\Api\V1\ReportController::class, 'getPurchaseSell']);
+        Route::get('/reports/tax', [\App\Http\Controllers\Api\V1\ReportController::class, 'getTaxReport']);
+        Route::get('/reports/expense', [\App\Http\Controllers\Api\V1\ReportController::class, 'getExpenseReport']);
+        Route::get('/reports/register', [\App\Http\Controllers\Api\V1\ReportController::class, 'getRegisterReport']);
+        Route::get('/reports/stock', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockReport']);
+        Route::get('/reports/stock-expiry', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockExpiryReport']);
+        Route::get('/reports/lot', [\App\Http\Controllers\Api\V1\ReportController::class, 'getLotReport']);
+        Route::get('/reports/stock-value', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockValue']);
+        
         Route::get('/reports/sales', [App\Http\Controllers\Api\V1\ReportController::class, 'sales']);
         Route::get('/reports/inventory-analysis', [App\Http\Controllers\Api\V1\ReportController::class, 'inventoryAnalysis']);
         Route::get('/reports/customers', [App\Http\Controllers\Api\V1\ReportController::class, 'customers']);
         Route::get('/reports/daily-performance', [App\Http\Controllers\Api\V1\ReportController::class, 'dailyPerformance']);
         Route::get('/reports/purchases', [App\Http\Controllers\Api\V1\ReportController::class, 'purchases']);
+
+        // Cash Register
+        Route::post('/cash-register/open', [\App\Http\Controllers\Api\V1\CashRegisterController::class, 'open']);
+        Route::get('/cash-register/status/{user_id}', [\App\Http\Controllers\Api\V1\CashRegisterController::class, 'status']);
     });
 });

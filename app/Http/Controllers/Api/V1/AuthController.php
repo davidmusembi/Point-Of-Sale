@@ -62,6 +62,19 @@ class AuthController extends BaseController
         // Strip business ID suffix (e.g., "Admin#2" -> "Admin")
         $role = explode('#', $role)[0];
 
+        $permitted_locations = $user->permitted_locations();
+        $query = \App\BusinessLocation::where('business_id', $user->business_id)->Active();
+        if ($permitted_locations != 'all') {
+            $query->whereIn('id', $permitted_locations);
+        }
+        
+        $locations = $query->select('id', 'name')->get()->map(function($location) {
+            return [
+                'id' => (int)$location->id,
+                'name' => $location->name
+            ];
+        });
+
         return [
             'id' => (int)$user->id,
             'name' => trim($user->first_name . ' ' . $user->last_name),
@@ -72,7 +85,7 @@ class AuthController extends BaseController
             'isActive' => (bool)$user->allow_login,
             'twoFactorEnabled' => false, // Placeholder
             'autoLockSeconds' => 1800,
-            'permittedLocations' => $user->permitted_locations()
+            'permittedLocations' => $locations
         ];
     }
 }
