@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['middleware' => ['auth:api'], 'prefix' => 'cash-register'], function () {
+    Route::post('/open', [\App\Http\Controllers\Api\CashRegisterController::class, 'open']);
+    Route::get('/status/{user_id}', [\App\Http\Controllers\Api\CashRegisterController::class, 'status']);
+});
