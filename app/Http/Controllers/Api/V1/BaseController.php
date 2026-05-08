@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class BaseController extends Controller
 {
@@ -43,14 +43,22 @@ class BaseController extends Controller
      */
     protected function paginate(LengthAwarePaginator $paginator, $data = null): JsonResponse
     {
+        $items = is_null($data) ? $paginator->items() : $data;
+
+        if ($items instanceof \Illuminate\Support\Collection) {
+            $items = $items->values()->all();
+        } elseif (is_array($items)) {
+            $items = array_values($items);
+        }
+
         return $this->success(
-            $data ?: $paginator->items(),
+            $items,
             null,
             [
-                'page' => $paginator->currentPage(),
-                'perPage' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'totalPages' => $paginator->lastPage(),
+                'page' => (int)$paginator->currentPage(),
+                'perPage' => (int)$paginator->perPage(),
+                'total' => (int)$paginator->total(),
+                'totalPages' => (int)$paginator->lastPage(),
             ]
         );
     }

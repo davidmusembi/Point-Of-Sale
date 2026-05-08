@@ -53,15 +53,30 @@ Route::prefix('v1')->middleware('api.logger')->group(function () {
         Route::get('/reports/expense', [\App\Http\Controllers\Api\V1\ReportController::class, 'getExpenseReport']);
         Route::get('/reports/register', [\App\Http\Controllers\Api\V1\ReportController::class, 'getRegisterReport']);
         Route::get('/reports/stock', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockReport']);
+        Route::get('/reports/stock-adjustment', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockAdjustmentReport']);
         Route::get('/reports/stock-expiry', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockExpiryReport']);
         Route::get('/reports/lot', [\App\Http\Controllers\Api\V1\ReportController::class, 'getLotReport']);
         Route::get('/reports/stock-value', [\App\Http\Controllers\Api\V1\ReportController::class, 'getStockValue']);
-        
-        Route::get('/reports/sales', [App\Http\Controllers\Api\V1\ReportController::class, 'sales']);
-        Route::get('/reports/inventory-analysis', [App\Http\Controllers\Api\V1\ReportController::class, 'inventoryAnalysis']);
-        Route::get('/reports/customers', [App\Http\Controllers\Api\V1\ReportController::class, 'customers']);
-        Route::get('/reports/daily-performance', [App\Http\Controllers\Api\V1\ReportController::class, 'dailyPerformance']);
-        Route::get('/reports/purchases', [App\Http\Controllers\Api\V1\ReportController::class, 'purchases']);
+        Route::get('/reports/trending-products', [\App\Http\Controllers\Api\V1\ReportController::class, 'getTrendingProducts']);
+        Route::get('/reports/product-purchase', [\App\Http\Controllers\Api\V1\ReportController::class, 'getProductPurchaseReport']);
+        Route::get('/reports/product-sell', [\App\Http\Controllers\Api\V1\ReportController::class, 'getProductSellReport']);
+        Route::get('/reports/product-sell-grouped', [\App\Http\Controllers\Api\V1\ReportController::class, 'getProductSellGroupedReport']);
+        Route::get('/reports/items', [\App\Http\Controllers\Api\V1\ReportController::class, 'itemsReport']);
+        Route::get('/reports/customer-supplier', [\App\Http\Controllers\Api\V1\ReportController::class, 'getCustomerSuppliers']);
+        Route::get('/reports/customer-group', [\App\Http\Controllers\Api\V1\ReportController::class, 'getCustomerGroup']);
+        Route::get('/reports/sales-representative', [\App\Http\Controllers\Api\V1\ReportController::class, 'getSalesRepresentativeReport']);
+        Route::get('/reports/service-staff', [\App\Http\Controllers\Api\V1\ReportController::class, 'getServiceStaffReport']);
+        Route::get('/reports/purchase-payment', [\App\Http\Controllers\Api\V1\ReportController::class, 'purchasePaymentReport']);
+        Route::get('/reports/sell-payment', [\App\Http\Controllers\Api\V1\ReportController::class, 'sellPaymentReport']);
+        Route::get('/reports/balance-sheet', [\App\Http\Controllers\Api\V1\ReportController::class, 'balanceSheet']);
+        Route::get('/reports/trial-balance', [\App\Http\Controllers\Api\V1\ReportController::class, 'trialBalance']);
+        Route::get('/reports/payment-account', [\App\Http\Controllers\Api\V1\ReportController::class, 'paymentAccountReport']);
+        Route::get('/reports/table', [\App\Http\Controllers\Api\V1\ReportController::class, 'getTableReport']);
+        Route::get('/reports/activity-log', [\App\Http\Controllers\Api\V1\ReportController::class, 'activityLog']);
+        Route::get('/reports/gst-sales', [\App\Http\Controllers\Api\V1\ReportController::class, 'gstSalesReport']);
+        Route::get('/reports/gst-purchase', [\App\Http\Controllers\Api\V1\ReportController::class, 'gstPurchaseReport']);
+        Route::get('/reports/daily-performance', [\App\Http\Controllers\Api\V1\ReportController::class, 'dailyPerformance']);
+
 
         // Cash Register
         Route::post('/cash-register/open', [\App\Http\Controllers\Api\V1\CashRegisterController::class, 'open']);
