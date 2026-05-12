@@ -22,6 +22,11 @@ class AdminSidebarMenu
             return $next($request);
         }
 
+        // No business in session = central/superadmin context; skip tenant sidebar.
+        if (! session()->has('business')) {
+            return $next($request);
+        }
+
         Menu::create('admin-sidebar-menu', function ($menu) {
             $enabled_modules = !empty(session('business.enabled_modules')) ? session('business.enabled_modules') : [];
 
