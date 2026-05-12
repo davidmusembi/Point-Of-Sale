@@ -119,7 +119,7 @@
                         <input type="email" name="email" id="email" required
                                class="form-control input-sm" placeholder="{{ __('business.email') }}">
                         <p class="tw-text-xs tw-text-indigo-600 tw-mt-1 tw-flex tw-items-center tw-gap-1">
-                            <svg class="tw-w-3.5 tw-h-3.5 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <svg class="tw-w-3 tw-h-3 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                             Credentials sent here automatically.
@@ -158,7 +158,7 @@
             {{-- Submit --}}
             <button type="submit"
                     class="tw-w-full tw-flex tw-items-center tw-justify-center tw-gap-2 tw-py-3 tw-rounded-xl tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-font-semibold tw-text-sm tw-shadow tw-transition-colors">
-                <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
                 Create Business &amp; Send Credentials

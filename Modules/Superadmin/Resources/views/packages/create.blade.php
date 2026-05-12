@@ -199,7 +199,7 @@
             {{-- Submit --}}
             <button type="submit"
                     class="tw-w-full tw-flex tw-items-center tw-justify-center tw-gap-2 tw-py-3 tw-rounded-xl tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-font-semibold tw-text-sm tw-shadow tw-transition-colors">
-                <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
                 @lang('messages.save')

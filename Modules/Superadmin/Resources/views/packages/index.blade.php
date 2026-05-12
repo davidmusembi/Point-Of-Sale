@@ -13,7 +13,7 @@
         </div>
         <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'create']) }}"
            class="tw-inline-flex tw-items-center tw-gap-2 tw-px-4 tw-py-2 tw-rounded-lg tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-text-sm tw-font-semibold tw-shadow tw-transition-colors tw-no-underline">
-            <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
             @lang('messages.add')
@@ -78,7 +78,7 @@
                         [__('superadmin::lang.invoice_count'), $package->invoice_count],
                     ] as [$label, $count])
                     <div class="tw-flex tw-items-center tw-gap-1.5">
-                        <svg class="tw-w-3.5 tw-h-3.5 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="tw-w-3 tw-h-3 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
                         <span class="tw-text-gray-600">
@@ -92,7 +92,7 @@
 
                     @if ($package->trial_days)
                     <div class="tw-flex tw-items-center tw-gap-1.5 tw-col-span-2">
-                        <svg class="tw-w-3.5 tw-h-3.5 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="tw-w-3 tw-h-3 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span class="tw-text-gray-600"><span class="tw-font-medium tw-text-gray-900">{{ $package->trial_days }}</span> @lang('superadmin::lang.trial_days')</span>
@@ -131,12 +131,12 @@
             <div class="tw-px-5 tw-py-3 tw-border-t tw-border-gray-100 tw-flex tw-items-center tw-justify-end tw-gap-2">
                 <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'edit'], [$package->id]) }}"
                    class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-indigo-600 hover:tw-bg-indigo-50 tw-transition-colors tw-no-underline">
-                    <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <svg class="tw-w-3 tw-h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     @lang('messages.edit')
                 </a>
                 <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'destroy'], [$package->id]) }}"
                    class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-red-600 hover:tw-bg-red-50 tw-transition-colors tw-no-underline link_confirmation">
-                    <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <svg class="tw-w-3 tw-h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     @lang('messages.delete')
                 </a>
             </div>

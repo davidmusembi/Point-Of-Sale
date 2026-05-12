@@ -18,8 +18,8 @@
             {{-- ── Brand ── --}}
             <a href="{{ action([\Modules\Superadmin\Http\Controllers\SuperadminController::class, 'index']) }}"
                class="tw-flex tw-items-center tw-gap-2.5 tw-shrink-0 tw-text-indigo-700 tw-font-bold tw-text-sm tw-no-underline">
-                <span class="tw-flex tw-items-center tw-justify-center tw-w-7 tw-h-7 tw-rounded-lg tw-bg-indigo-600 tw-text-white tw-shrink-0">
-                    <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <span class="tw-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 tw-rounded-lg tw-bg-indigo-600 tw-text-white tw-shrink-0">
+                    <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </span>
@@ -60,7 +60,7 @@
                     <button type="submit"
                             class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-sm tw-font-medium tw-text-red-600 hover:tw-bg-red-50 tw-border tw-border-transparent hover:tw-border-red-100 tw-transition-colors tw-bg-transparent tw-cursor-pointer"
                             onclick="return confirm('Log out?')">
-                        <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
                         <span class="tw-hidden sm:tw-inline">Logout</span>

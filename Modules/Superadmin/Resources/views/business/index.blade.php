@@ -12,7 +12,7 @@
         </div>
         <a href="{{ action([\Modules\Superadmin\Http\Controllers\BusinessController::class, 'create']) }}"
            class="tw-inline-flex tw-items-center tw-gap-2 tw-px-4 tw-py-2 tw-rounded-lg tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-text-sm tw-font-semibold tw-shadow tw-transition-colors tw-no-underline">
-            <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
             @lang('messages.add')
@@ -26,7 +26,7 @@
     <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm tw-mb-5">
         <div class="tw-px-5 tw-py-3 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"
              data-toggle="collapse" data-target="#businessFilters">
-            <svg class="tw-w-4 tw-h-4 tw-text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5 tw-text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
             </svg>
             <span class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">@lang('report.filters')</span>

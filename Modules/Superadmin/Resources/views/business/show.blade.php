@@ -21,7 +21,7 @@
         {{-- Business Info --}}
         <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
             <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-                <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
                 <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">@lang('superadmin::lang.business_name')</h2>
@@ -53,7 +53,7 @@
         {{-- Status & Meta --}}
         <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
             <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-                <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">Status</h2>
@@ -85,7 +85,7 @@
         {{-- Owner & Logo --}}
         <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
             <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-                <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
                 </svg>
                 <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">@lang('business.owner')</h2>
@@ -122,7 +122,7 @@
     <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
         <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-justify-between">
             <div class="tw-flex tw-items-center tw-gap-2">
-                <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
                 </svg>
                 <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">Tenant & Database</h2>
@@ -133,7 +133,7 @@
                       onsubmit="return confirm('Provision DB? This creates and migrates the tenant database.')">
                     @csrf
                     <button type="submit" class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-teal-700 tw-border tw-border-teal-200 hover:tw-bg-teal-50 tw-transition-colors tw-bg-transparent tw-cursor-pointer">
-                        <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+                        <svg class="tw-w-3 tw-h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
                         Provision DB
                     </button>
                 </form>
@@ -141,7 +141,7 @@
                       onsubmit="return confirm('Run pending migrations on this tenant database?')">
                     @csrf
                     <button type="submit" class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-amber-700 tw-border tw-border-amber-200 hover:tw-bg-amber-50 tw-transition-colors tw-bg-transparent tw-cursor-pointer">
-                        <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <svg class="tw-w-3 tw-h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         Run Migrations
                     </button>
                 </form>
@@ -211,7 +211,7 @@
         @else
         <div class="tw-p-5">
             <div class="tw-flex tw-items-start tw-gap-3 tw-p-4 tw-rounded-lg tw-bg-amber-50 tw-border tw-border-amber-200">
-                <svg class="tw-w-4 tw-h-4 tw-text-amber-500 tw-shrink-0 tw-mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="tw-w-5 tw-h-5 tw-text-amber-500 tw-shrink-0 tw-mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
                 <p class="tw-text-sm tw-text-amber-800">
@@ -226,7 +226,7 @@
     {{-- ── Business Locations ── --}}
     <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
         <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
             <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">@lang('superadmin::lang.business_location')</h2>
@@ -266,7 +266,7 @@
     {{-- ── Subscriptions ── --}}
     <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
         <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 11a8.1 8.1 0 0 0-15.5-2m-.5-4v4h4M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>
             </svg>
             <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">@lang('superadmin::lang.package_subscription')</h2>
@@ -308,7 +308,7 @@
     {{-- ── Users ── --}}
     <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm">
         <div class="tw-px-5 tw-py-4 tw-border-b tw-border-gray-100 tw-flex tw-items-center tw-gap-2">
-            <svg class="tw-w-4 tw-h-4 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="tw-w-5 tw-h-5 tw-text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
             <h2 class="tw-text-xs tw-font-semibold tw-text-gray-500 tw-uppercase tw-tracking-wider">{{ __('user.all_users') }}</h2>
