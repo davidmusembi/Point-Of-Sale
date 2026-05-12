@@ -12,7 +12,7 @@
     </section>
 
     <section class="content">
-        @include('layouts.partials.error_modal')
+        @include('layouts.partials.error')
 
         <div class="tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
