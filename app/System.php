@@ -13,19 +13,13 @@ class System extends Model
      */
     protected $table = 'system';
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+    protected $primaryKey = 'key';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     public $timestamps = false;
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     /**
      * Return the value of the property
