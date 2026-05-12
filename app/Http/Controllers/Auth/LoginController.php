@@ -69,7 +69,10 @@ class LoginController extends Controller
 
     public function logout()
     {
-        $this->businessUtil->activityLog(auth()->user(), 'logout');
+        $user = auth()->user();
+        if ($user && ! $this->isSuperadmin($user)) {
+            $this->businessUtil->activityLog($user, 'logout');
+        }
 
         request()->session()->flush();
         \Auth::logout();
@@ -87,6 +90,11 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        // Superadmin has no business record — skip all tenant checks.
+        if ($this->isSuperadmin($user)) {
+            return null;
+        }
+
         $this->businessUtil->activityLog($user, 'login', null, [], false, $user->business_id);
 
         if (! $user->business->is_active) {
@@ -127,6 +135,11 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $user = \Auth::user();
+
+        if ($this->isSuperadmin($user)) {
+            return '/superadmin';
+        }
+
         if (! $user->can('dashboard.data') && $user->can('sell.create')) {
             return '/pos/create';
         }
@@ -136,6 +149,16 @@ class LoginController extends Controller
         }
 
         return '/home';
+    }
+
+    private function isSuperadmin($user): bool
+    {
+        $list = config('constants.administrator_usernames', '');
+
+        return ! empty($list) && in_array(
+            strtolower($user->username),
+            explode(',', strtolower($list))
+        );
     }
 
     public function validateLogin(Request $request)
