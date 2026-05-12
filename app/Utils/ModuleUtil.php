@@ -136,6 +136,25 @@ class ModuleUtil extends Util
      */
     public function hasThePermissionInSubscription($business_id, $permission, $callback_function = null)
     {
+        if (tenancy()->initialized()) {
+            $tenant = tenant();
+            $package_id = $tenant->package_id;
+
+            if ($package_id) {
+                $package = \DB::connection(config('tenancy.database.central_connection'))
+                    ->table('packages')
+                    ->where('id', $package_id)
+                    ->first();
+
+                if ($package && ! empty($package->enabled_modules)) {
+                    $enabled_modules = json_decode($package->enabled_modules, true);
+                    if (in_array($permission, $enabled_modules)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
         if ($this->isSuperadminInstalled()) {
             if (auth()->user()->can('superadmin')) {
                 return true;

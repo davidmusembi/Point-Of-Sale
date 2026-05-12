@@ -142,7 +142,10 @@ class Media extends Model
         if ($file->getSize() <= config('constants.document_size_limit')) {
             $new_file_name = time().'_'.mt_rand().'_'.$file->getClientOriginalName();
             if ($file->storeAs('/media', $new_file_name)) {
-                $file_name = $new_file_name;
+                $file_name = [
+                    'file_name' => $new_file_name,
+                    'file_size' => $file->getSize(),
+                ];
             }
         }
 
@@ -190,11 +193,12 @@ class Media extends Model
     public static function attachMediaToModel($model, $business_id, $uploaded_files, $request = null, $model_media_type = null)
     {
         if (! empty($uploaded_files)) {
-            if (is_array($uploaded_files)) {
+            if (is_array($uploaded_files) && isset($uploaded_files[0]['file_name'])) {
                 $media_obj = [];
                 foreach ($uploaded_files as $value) {
                     $media_obj[] = new \App\Media([
-                        'file_name' => $value,
+                        'file_name' => $value['file_name'],
+                        'file_size' => $value['file_size'],
                         'business_id' => $business_id,
                         'description' => ! empty($request->description) ? $request->description : null,
                         'uploaded_by' => ! empty($request->uploaded_by) ? $request->uploaded_by : auth()->user()->id,
@@ -208,7 +212,8 @@ class Media extends Model
                 $model->media()->delete();
 
                 $media_obj = new \App\Media([
-                    'file_name' => $uploaded_files,
+                    'file_name' => is_array($uploaded_files) ? $uploaded_files['file_name'] : $uploaded_files,
+                    'file_size' => is_array($uploaded_files) ? ($uploaded_files['file_size'] ?? 0) : 0,
                     'business_id' => $business_id,
                     'description' => ! empty($request->description) ? $request->description : null,
                     'uploaded_by' => ! empty($request->uploaded_by) ? $request->uploaded_by : auth()->user()->id,

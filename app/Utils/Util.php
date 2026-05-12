@@ -698,6 +698,27 @@ class Util
             return null;
         }
 
+        if (tenancy()->initialized()) {
+            $tenant = tenant();
+            $package_id = $tenant->package_id;
+
+            if ($package_id) {
+                $package = \DB::connection(config('tenancy.database.central_connection'))
+                    ->table('packages')
+                    ->where('id', $package_id)
+                    ->first();
+
+                if ($package && $package->storage_limit > 0) {
+                    $used_storage = \App\Media::sum('file_size'); // In bytes
+                    $storage_limit_bytes = $package->storage_limit * 1024 * 1024; // MB to bytes
+
+                    if ($used_storage >= $storage_limit_bytes) {
+                        throw new \Exception("Storage limit reached for your package.");
+                    }
+                }
+            }
+        }
+
         $uploaded_file_name = null;
         if ($request->hasFile($file_name) && $request->file($file_name)->isValid()) {
 

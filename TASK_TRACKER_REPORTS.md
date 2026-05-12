@@ -17,30 +17,32 @@ This document tracks the progress of creating V1 API endpoints for existing web 
 - [✅] Stock Value Report (`/reports/stock-value`)
 
 ## Priority 3: Product & Sales Reports
-- [ ] Trending Products (`/reports/trending-products`)
-- [ ] Product Purchase Report (`/reports/product-purchase`)
-- [ ] Product Sell Report (`/reports/product-sell`)
-- [ ] Product Sell Grouped Report (`/reports/product-sell-grouped`)
-- [ ] Items Report (`/reports/items`)
+- [✅] Trending Products (`/reports/trending-products`)
+- [✅] Product Purchase Report (`/reports/product-purchase`)
+- [✅] Product Sell Report (`/reports/product-sell`)
+- [✅] Product Sell Grouped Report (`/reports/product-sell-grouped`)
+- [✅] Items Report (`/reports/items`)
 
 ## Priority 4: Contact & User Reports
-- [ ] Customer & Supplier Report (`/reports/customer-supplier`)
-- [ ] Customer Group Report (`/reports/customer-group`)
-- [ ] Sales Representative Report (`/reports/sales-representative`)
-- [ ] Service Staff Report (`/reports/service-staff`)
+- [✅] Customer & Supplier Report (`/reports/customer-supplier`)
+- [✅] Customer Group Report (`/reports/customer-group`)
+- [✅] Sales Representative Report (`/reports/sales-representative`)
+- [✅] Service Staff Report (`/reports/service-staff`)
 
 ## Priority 5: Payment & Accounting Reports
-- [ ] Purchase Payment Report (`/reports/purchase-payment`)
-- [ ] Sell Payment Report (`/reports/sell-payment`)
-- [ ] Balance Sheet (`/reports/balance-sheet`)
-- [ ] Trial Balance (`/reports/trial-balance`)
-- [ ] Payment Account Report (`/reports/payment-account`)
+- [✅] Purchase Payment Report (`/reports/purchase-payment`)
+- [✅] Sell Payment Report (`/reports/sell-payment`)
+- [✅] Balance Sheet (`/reports/balance-sheet`)
+- [✅] Trial Balance (`/reports/trial-balance`)
+- [✅] Payment Account Report (`/reports/payment-account`)
 
 ## Priority 6: Specialized & Log Reports
-- [ ] Table Report (`/reports/table`)
-- [ ] Activity Log (`/reports/activity-log`)
-- [ ] GST Sales Report (`/reports/gst-sales`)
-- [ ] GST Purchase Report (`/reports/gst-purchase`)
+- [✅] Table Report (`/reports/table`)
+- [✅] Service Staff Line Orders (Included in `/reports/service-staff`)
+- [✅] Activity Log (`/reports/activity-log`)
+- [✅] GST Sales Report (`/reports/gst-sales`)
+- [✅] GST Purchase Report (`/reports/gst-purchase`)
+*(Note: Reward Points Report was removed as it does not exist in the core controllers.)*
 
 ## Status Legend
 - ⚪ Not Started

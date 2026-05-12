@@ -101,7 +101,41 @@ class Business extends Model
      */
     public static function create_business($details)
     {
+        if (tenancy()->initialized()) {
+            // Logic for adding a business within an existing tenant
+            $tenant = tenant();
+            $package_id = $tenant->package_id;
+
+            if ($package_id) {
+                $package = \DB::connection(config('tenancy.database.central_connection'))
+                    ->table('packages')
+                    ->where('id', $package_id)
+                    ->first();
+
+                if ($package && $package->business_count > 0) {
+                    $business_count = Business::count();
+                    if ($business_count >= $package->business_count) {
+                        throw new \Exception("Business limit reached for your package.");
+                    }
+                }
+            }
+
+            return Business::create($details);
+        }
+
+        // Central registration logic (First business)
         $business = Business::create($details);
+
+        $subdomain = \Illuminate\Support\Str::slug($business->name);
+        $package_id = request()->get('package_id');
+
+        $tenant = \App\Tenant::create([
+            'id' => $subdomain,
+            'owner_id' => $business->owner_id,
+            'package_id' => $package_id,
+        ]);
+
+        $tenant->createDomain(['domain' => $subdomain]);
 
         return $business;
     }

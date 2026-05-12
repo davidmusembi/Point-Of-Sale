@@ -82,6 +82,25 @@ class User extends Authenticatable
      */
     public static function create_user($details)
     {
+        if (tenancy()->initialized()) {
+            $tenant = tenant();
+            $package_id = $tenant->package_id;
+
+            if ($package_id) {
+                $package = \DB::connection(config('tenancy.database.central_connection'))
+                    ->table('packages')
+                    ->where('id', $package_id)
+                    ->first();
+
+                if ($package && $package->user_count > 0) {
+                    $user_count = User::user()->count();
+                    if ($user_count >= $package->user_count) {
+                        throw new \Exception("User limit reached for your package.");
+                    }
+                }
+            }
+        }
+
         $user = User::create([
             'surname' => $details['surname'],
             'first_name' => $details['first_name'],

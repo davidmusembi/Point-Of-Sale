@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('currencies', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('business_id');
-            $table->string('file_name');
-            $table->morphs('model');
-            $table->timestamps();
+            $table->string('country', 100);
+            $table->string('currency', 100);
+            $table->string('code', 25);
+            $table->string('symbol', 25);
+            $table->string('thousand_separator', 10);
+            $table->string('decimal_separator', 10);
+            $table->nullableTimestamps();
         });
     }
 
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('currencies');
     }
 };
