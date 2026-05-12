@@ -1,0 +1,121 @@
+# =============================================================================
+# ultimatePOS — Caddyfile (Cloudflare + wildcard subdomains)
+# =============================================================================
+# Place at: /etc/caddy/Caddyfile
+# Apply:    systemctl reload caddy
+#
+# Assumes:
+#   - Cloudflare is proxying *.yourdomain.com (orange cloud)
+#   - CF SSL mode: Full (strict)  →  Caddy issues its own cert for origin TLS
+#   - Caddy DNS plugin for Cloudflare is installed:
+#       caddy add-package github.com/caddy-dns/cloudflare
+#   - CF_API_TOKEN env var set in /etc/caddy/caddy.env with Zone:DNS:Edit scope
+#
+# Replace "yourdomain.com" with your actual domain everywhere below.
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Global options
+# ---------------------------------------------------------------------------
+{
+    # Email for ACME account (used for cert notifications)
+    email admin@yourdomain.com
+
+    # Uncomment to use Let's Encrypt staging during initial setup
+    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+
+    # On-demand TLS — enables auto-cert for custom tenant domains (future use)
+    on_demand_tls {
+        ask http://localhost:8080/check-domain
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Central app — explicit hostname
+# ---------------------------------------------------------------------------
+yourdomain.com, www.yourdomain.com {
+    tls {
+        dns cloudflare {env.CF_API_TOKEN}
+    }
+
+    root * /var/www/pos/public
+    encode gzip
+
+    # Laravel: try the real file, then fall back to index.php
+    php_fastcgi unix//run/php/php8.1-fpm-pos.sock {
+        index index.php
+    }
+
+    file_server
+
+    # Block sensitive paths
+    @blocked {
+        path /.env /.git* /*.sql /*.sh /*.log /storage/logs/*
+    }
+    respond @blocked 403
+
+    header {
+        X-Frame-Options        "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection       "1; mode=block"
+        Referrer-Policy        "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    log {
+        output file /var/log/caddy/pos-central-access.log {
+            roll_size 50mb
+            roll_keep 5
+        }
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Tenant subdomains — wildcard
+# One block handles ALL tenants. No config change needed per provision.
+# stancl/tenancy reads the subdomain from Host header and routes to the
+# correct tenant database automatically.
+# ---------------------------------------------------------------------------
+*.yourdomain.com {
+    tls {
+        dns cloudflare {env.CF_API_TOKEN}
+    }
+
+    root * /var/www/pos/public
+    encode gzip
+
+    php_fastcgi unix//run/php/php8.1-fpm-pos.sock {
+        index index.php
+    }
+
+    file_server
+
+    @blocked {
+        path /.env /.git* /*.sql /*.sh /*.log /storage/logs/*
+    }
+    respond @blocked 403
+
+    header {
+        X-Frame-Options        "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection       "1; mode=block"
+        Referrer-Policy        "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Rate limit — 30 requests/min per IP for unknown tenant probing
+    rate_limit {
+        zone tenant_probe {
+            key {remote_host}
+            events 30
+            window 1m
+        }
+    }
+
+    log {
+        output file /var/log/caddy/pos-tenant-access.log {
+            roll_size 100mb
+            roll_keep 7
+        }
+    }
+}

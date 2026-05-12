@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Tenant;
 use Modules\Superadmin\Entities\Package;
 use Modules\Superadmin\Notifications\PasswordUpdateNotification;
 use Spatie\Permission\Models\Permission;
@@ -265,6 +266,10 @@ class BusinessController extends BaseController
             abort(403, 'Unauthorized action.');
         }
 
+        $business = null;
+        $user = null;
+        $subscription_details = [];
+
         try {
             DB::beginTransaction();
 
@@ -318,19 +323,6 @@ class BusinessController extends BaseController
             }
 
             DB::commit();
-
-            //Module function to be called after after business is created
-            if (config('app.env') != 'demo') {
-                $this->moduleUtil->getModuleData('after_business_created', ['business' => $business]);
-            }
-
-            $output = ['success' => 1,
-                'msg' => __('business.business_created_succesfully'),
-            ];
-
-            return redirect()
-                ->action([\Modules\Superadmin\Http\Controllers\BusinessController::class, 'index'])
-                ->with('status', $output);
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
@@ -341,6 +333,19 @@ class BusinessController extends BaseController
 
             return back()->with('status', $output)->withInput();
         }
+
+        //Module function to be called after business is created
+        if (config('app.env') != 'demo') {
+            $this->moduleUtil->getModuleData('after_business_created', ['business' => $business]);
+        }
+
+        $output = ['success' => 1,
+            'msg' => __('business.business_created_succesfully'),
+        ];
+
+        return redirect()
+            ->action([\Modules\Superadmin\Http\Controllers\BusinessController::class, 'index'])
+            ->with('status', $output);
     }
 
     /**
@@ -418,10 +423,22 @@ class BusinessController extends BaseController
             }
             Transaction::where('business_id', $id)->delete();
 
-            Business::where('id', $id)
-                ->delete();
+            $business = Business::find($id);
+            $tenantId = $business?->tenant_id;
+
+            Business::where('id', $id)->delete();
 
             DB::commit();
+
+            // Delete the tenant and its database after the central DB transaction commits.
+            if ($tenantId) {
+                try {
+                    $tenant = Tenant::find($tenantId);
+                    $tenant?->delete(); // triggers DeleteDatabase job via TenancyServiceProvider
+                } catch (\Exception $e) {
+                    \Log::error('Tenant deletion failed for tenant ' . $tenantId . ': ' . $e->getMessage());
+                }
+            }
 
             $output = ['success' => 1, 'msg' => __('lang_v1.success')];
 

@@ -75,10 +75,23 @@
                          </div>
                     </div>
 
+                    <div class="col-md-12"><hr></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('subdomain', 'Subdomain' . ':') !!}
+                            <div class="input-group">
+                                <input type="text" name="subdomain" id="subdomain" class="form-control"
+                                    placeholder="e.g. my-business">
+                                <span class="input-group-addon" id="subdomain_suffix">.{{ env('APP_DOMAIN', 'localhost') }}</span>
+                            </div>
+                            <small class="text-muted">Auto-generated from business name. Tenants access the POS at this subdomain.</small>
+                        </div>
+                    </div>
+
                 <div class="col-md-12 text-center">
                     {!! Form::submit(__('messages.submit'), ['class' => 'tw-dw-btn tw-dw-btn-success tw-text-white tw-dw-btn-lg']) !!}
                 </div>
-                    
+
                 {!! Form::close() !!}
 				</div>
 			</div>
@@ -165,6 +178,23 @@
             });
 
             $("#business_logo").fileinput({'showUpload':false, 'showPreview':false, 'browseLabel': LANG.file_browse_label, 'removeLabel': LANG.remove});
+
+            // Auto-generate subdomain slug from business name
+            var subdomainManual = false;
+            $('#name').on('input', function () {
+                if (!subdomainManual) {
+                    var slug = $(this).val()
+                        .toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    $('#subdomain').val(slug);
+                }
+            });
+            $('#subdomain').on('input', function () {
+                subdomainManual = true;
+            });
         });
     </script>
 @endsection

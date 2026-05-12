@@ -9,11 +9,6 @@ use Spatie\Permission\Models\Permission;
 
 class AddMoreColumnsToEssentialsToDosTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table('essentials_to_dos', function (Blueprint $table) {
@@ -47,11 +42,6 @@ class AddMoreColumnsToEssentialsToDosTable extends Migration
         Permission::create(['name' => 'essentials.assign_todos']);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('essentials_todos_users');

@@ -6,16 +6,16 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+    // PermissionsTableSeeder excluded — permissions table is tenant-only.
+    // Permissions are seeded via TenantSeeder when each tenant is provisioned.
+
     public function run()
     {
-        $this->call([BarcodesTableSeeder::class,
-            PermissionsTableSeeder::class,
+        $this->call([
+            BarcodesTableSeeder::class,
             CurrenciesTableSeeder::class,
+            SuperadminUserSeeder::class,
+            PackageSeeder::class,
         ]);
     }
 }

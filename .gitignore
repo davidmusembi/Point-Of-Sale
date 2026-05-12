@@ -27,3 +27,5 @@ npm-debug.log
 /public/js/skins/
 /public/js/icons/
 GEMINI.md
+# Archive files
+*.zip

@@ -268,6 +268,104 @@
                 </div>
             </div>
         </div>
+        {{-- Tenant & Domain Management Panel --}}
+        @php $tenant = $business->tenant; @endphp
+        <div class="tw-mt-5 tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            <div class="tw-p-4 sm:tw-p-5">
+                <div class="tw-flex tw-justify-between tw-items-center tw-gap-2.5">
+                    <strong><i class="fa fa-server margin-r-5"></i> Tenant & Database</strong>
+                    @if($tenant)
+                        <div class="tw-flex tw-gap-2">
+                            <form method="POST" action="{{ route('superadmin.tenants.provision', $tenant->id) }}"
+                                onsubmit="return confirm('Provision DB? This creates and migrates the tenant database.')">
+                                @csrf
+                                <button type="submit" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-accent">
+                                    <i class="fa fa-database"></i> Provision DB
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('superadmin.tenants.migrate', $tenant->id) }}"
+                                onsubmit="return confirm('Run pending migrations on this tenant database?')">
+                                @csrf
+                                <button type="submit" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-warning">
+                                    <i class="fa fa-refresh"></i> Run Migrations
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="tw-mt-4">
+                    @if($tenant)
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <p><strong>Tenant ID:</strong><br>
+                                    <code class="tw-text-xs">{{ $tenant->id }}</code>
+                                </p>
+                                <p><strong>DB Name:</strong><br>
+                                    <code class="tw-text-xs">tenant{{ $tenant->id }}</code>
+                                </p>
+                                <p><strong>Package ID:</strong> {{ $tenant->package_id ?? '—' }}</p>
+                            </div>
+                            <div class="col-sm-8">
+                                <strong>Domains / Subdomains</strong>
+                                <table class="table table-bordered table-condensed tw-mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th>Domain</th>
+                                            <th style="width:80px">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($tenant->domains as $domain)
+                                            <tr>
+                                                <td><code>{{ $domain->domain }}</code></td>
+                                                <td>
+                                                    <form method="POST"
+                                                        action="{{ route('superadmin.domains.destroy', $domain->id) }}"
+                                                        onsubmit="return confirm('Remove this domain?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline tw-dw-btn-error">
+                                                            Remove
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="2" class="text-muted text-center">No domains assigned</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+
+                                {{-- Add domain form --}}
+                                <form method="POST" action="{{ route('superadmin.domains.store') }}" class="tw-mt-3">
+                                    @csrf
+                                    <input type="hidden" name="tenant_id" value="{{ $tenant->id }}">
+                                    <div class="input-group">
+                                        <input type="text" name="domain" class="form-control"
+                                            placeholder="e.g. mybiz.app.com or pos.mybiz.com" required>
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-primary">Add Domain</button>
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">Enter the full domain or subdomain (no http://)</small>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            No tenant provisioned for this business.
+                            <a href="{{ action([\Modules\Superadmin\Http\Controllers\BusinessController::class, 'create']) }}"
+                                class="alert-link">Create a new business</a> to auto-provision, or use the
+                            <a href="{{ route('superadmin.tenants.index') }}" class="alert-link">Tenant portal</a>.
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         @include('superadmin::business.update_password_modal')
     </section>
     <!-- /.content -->

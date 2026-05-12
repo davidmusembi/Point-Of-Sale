@@ -41,6 +41,15 @@ Route::middleware('web', 'auth', 'language', 'AdminSidebarMenu', 'superadmin')->
     Route::get('/communicator/get-history', [Modules\Superadmin\Http\Controllers\CommunicatorController::class, 'getHistory']);
 
     Route::resource('/frontend-pages', 'Modules\Superadmin\Http\Controllers\PageController');
+
+    // Tenant management portal
+    Route::get('/tenants', [Modules\Superadmin\Http\Controllers\TenantController::class, 'index'])->name('superadmin.tenants.index');
+    Route::post('/tenants/{id}/provision', [Modules\Superadmin\Http\Controllers\TenantController::class, 'provision'])->name('superadmin.tenants.provision');
+    Route::post('/tenants/{id}/migrate', [Modules\Superadmin\Http\Controllers\TenantController::class, 'migrate'])->name('superadmin.tenants.migrate');
+
+    // Domain management (per-tenant)
+    Route::post('/domains', [Modules\Superadmin\Http\Controllers\DomainController::class, 'store'])->name('superadmin.domains.store');
+    Route::delete('/domains/{id}', [Modules\Superadmin\Http\Controllers\DomainController::class, 'destroy'])->name('superadmin.domains.destroy');
 });
 
 Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'AdminSidebarMenu')->group(function () {

@@ -94,6 +94,11 @@ class Business extends Model
         return $this->hasMany('\Modules\Superadmin\Entities\Subscription');
     }
 
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Tenant::class, 'tenant_id');
+    }
+
     /**
      * Creates a new business based on the input provided.
      *
@@ -123,19 +128,34 @@ class Business extends Model
             return Business::create($details);
         }
 
-        // Central registration logic (First business)
+        // Central registration logic (first business for a new account)
         $business = Business::create($details);
 
-        $subdomain = \Illuminate\Support\Str::slug($business->name);
+        $requestedSlug = request()->get('subdomain');
+        $baseSlug = $requestedSlug
+            ? \Illuminate\Support\Str::slug($requestedSlug)
+            : \Illuminate\Support\Str::slug($business->name);
+
+        // Ensure the subdomain slug is unique across existing domains
+        $slug = $baseSlug;
+        $counter = 1;
+        while (\Stancl\Tenancy\Database\Models\Domain::where('domain', 'like', $slug . '.%')->orWhere('domain', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+
         $package_id = request()->get('package_id');
+        $centralDomain = env('APP_DOMAIN', config('tenancy.central_domains.0', 'localhost'));
 
         $tenant = \App\Tenant::create([
-            'id' => $subdomain,
-            'owner_id' => $business->owner_id,
+            'owner_id'   => $business->owner_id,
             'package_id' => $package_id,
         ]);
 
-        $tenant->createDomain(['domain' => $subdomain]);
+        $tenant->createDomain(['domain' => $slug . '.' . $centralDomain]);
+
+        // Link the central business record to its tenant
+        $business->tenant_id = $tenant->id;
+        $business->save();
 
         return $business;
     }
