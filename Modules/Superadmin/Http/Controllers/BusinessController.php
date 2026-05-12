@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Tenant;
 use Modules\Superadmin\Entities\Package;
 use Modules\Superadmin\Notifications\PasswordUpdateNotification;
+use Modules\Superadmin\Notifications\BusinessWelcomeNotification;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -273,8 +275,10 @@ class BusinessController extends BaseController
         try {
             DB::beginTransaction();
 
-            //Create owner.
-            $owner_details = $request->only(['surname', 'first_name', 'last_name', 'username', 'email', 'password']);
+            //Create owner with a generated one-time password.
+            $plain_password = Str::password(12, letters: true, numbers: true, symbols: false);
+            $owner_details = $request->only(['surname', 'first_name', 'last_name', 'username', 'email']);
+            $owner_details['password'] = $plain_password;
             $owner_details['language'] = env('APP_LOCALE');
 
             $user = User::create_user($owner_details);
@@ -323,6 +327,20 @@ class BusinessController extends BaseController
             }
 
             DB::commit();
+
+            // Send welcome email with one-time credentials.
+            try {
+                $loginUrl = url(config('app.url') . '/login');
+                $user->notify(new BusinessWelcomeNotification(
+                    $business->name,
+                    $loginUrl,
+                    $user->username,
+                    $plain_password
+                ));
+            } catch (\Exception $mailEx) {
+                \Log::warning('Welcome email failed for user ' . $user->id . ': ' . $mailEx->getMessage());
+            }
+
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());

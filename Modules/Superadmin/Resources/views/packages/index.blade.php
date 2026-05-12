@@ -2,320 +2,153 @@
 @section('title', __('superadmin::lang.superadmin') . ' | ' . __('superadmin::lang.packages'))
 
 @section('content')
-    @include('superadmin::layouts.nav')
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">@lang('superadmin::lang.packages') <small>@lang('superadmin::lang.all_packages')</small></h1>
-        <!-- <ol class="breadcrumb">
-            <a href="#"><i class="fa fa-dashboard"></i> Level</a><br/>
-            <li class="active">Here<br/>
-        </ol> -->
-    </section>
+@include('superadmin::layouts.nav')
+@include('superadmin::layouts.partials.currency')
 
-    <!-- Main content -->
-    <section class="content">
-        @include('superadmin::layouts.partials.currency')
-
-        {{-- <div class="box box-solid">
-        <div class="box-header">
-            <h3 class="box-title">&nbsp;</h3>
-        	<div class="box-tools">
-                <a href="{{action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'create'])}}" 
-                    class="btn btn-block btn-primary">
-                	<i class="fa fa-plus"></i> @lang( 'messages.add' )</a>
-            </div>
+<section class="content-header tw-px-4 sm:tw-px-6 tw-pb-0">
+    <div class="tw-flex tw-items-center tw-justify-between tw-gap-4">
+        <div>
+            <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">@lang('superadmin::lang.packages')</h1>
+            <p class="tw-text-sm tw-text-gray-500 tw-mt-0.5">@lang('superadmin::lang.all_packages')</p>
         </div>
+        <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'create']) }}"
+           class="tw-inline-flex tw-items-center tw-gap-2 tw-px-4 tw-py-2 tw-rounded-lg tw-bg-indigo-600 hover:tw-bg-indigo-700 tw-text-white tw-text-sm tw-font-semibold tw-shadow tw-transition-colors tw-no-underline">
+            <svg class="tw-w-4 tw-h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            @lang('messages.add')
+        </a>
+    </div>
+</section>
 
-        <div class="box-body">
-        	@foreach ($packages as $package)
-                <div class="col-md-4">
-					<div class="box box-success hvr-grow-shadow">
-						<div class="box-header with-border text-center">
-							<h2 class="box-title">{{$package->name}}</h2>
-								@if ($package->mark_package_as_popular == 1)
-								<div class="pull-right">
-									<span class="badge bg-green">
-										@lang('superadmin::lang.popular')
-									</span>
-								</div>
-								@endif
-							<div class="row">
-								@if ($package->is_private)
-									<a href="#!" class="btn btn-box-tool">
-										<i class="fas fa-lock fa-lg text-warning" data-toggle="tooltip"
-										title="@lang('superadmin::lang.private_superadmin_only')"></i>
-									</a>
-								@endif
-
-								@if ($package->is_one_time)
-									<a href="#!" class="btn btn-box-tool">
-										<i class="fas fa-dot-circle fa-lg text-info" data-toggle="tooltip"
-										title="@lang('superadmin::lang.one_time_only_subscription')"></i>
-									</a>
-								@endif
-								
-								@if ($package->is_active == 1)
-									<span class="badge bg-green">
-										@lang('superadmin::lang.active')
-									</span>
-								@else
-									<span class="badge bg-red">
-									@lang('superadmin::lang.inactive')
-									</span>
-								@endif
-								
-								<a href="{{action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'edit'], [$package->id])}}" class="btn btn-box-tool" title="edit"><i class="fa fa-edit"></i></a>
-								<a href="{{action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'destroy'], [$package->id])}}" class="btn btn-box-tool link_confirmation" title="delete"><i class="fa fa-trash"></i></a>
-              					
-							</div>
-						</div>
-						<!-- /.box-header -->
-						<div class="box-body text-center">
-
-							@if ($package->location_count == 0)
-								@lang('superadmin::lang.unlimited')
-							@else
-								{{$package->location_count}}
-							@endif
-
-							@lang('business.business_locations')
-							<br/>
-
-							@if ($package->user_count == 0)
-								@lang('superadmin::lang.unlimited')
-							@else
-								{{$package->user_count}}
-							@endif
-
-							@lang('superadmin::lang.users')
-							<br/>
-						
-							@if ($package->product_count == 0)
-								@lang('superadmin::lang.unlimited')
-							@else
-								{{$package->product_count}}
-							@endif
-
-							@lang('superadmin::lang.products')
-							<br/>
-
-							@if ($package->invoice_count == 0)
-								@lang('superadmin::lang.unlimited')
-							@else
-								{{$package->invoice_count}}
-							@endif
-
-							@lang('superadmin::lang.invoices')
-							<br/>
-
-							@if ($package->trial_days != 0)
-									{{$package->trial_days}} @lang('superadmin::lang.trial_days')
-								<br/>
-							@endif
-
-							@if (!empty($package->custom_permissions))
-								@foreach ($package->custom_permissions as $permission => $value)
-									@isset($permission_formatted[$permission])
-										{{$permission_formatted[$permission]}}
-										<br/>
-									@endisset
-								@endforeach
-							@endif
-							
-							<h3 class="text-center">
-								@if ($package->price != 0)
-									<span class="display_currency" data-currency_symbol="true">
-										{{$package->price}}
-									</span>
-
-									<small>
-										/ {{$package->interval_count}} {{__('lang_v1.' . $package->interval)}}
-									</small>
-								@else
-									@lang('superadmin::lang.free_for_duration', ['duration' => $package->interval_count . ' ' . __('lang_v1.' . $package->interval)])
-								@endif
-							</h3>
-
-						</div>
-						<!-- /.box-body -->
-
-						<div class="box-footer text-center">
-							{{$package->description}}
-						</div>
-					</div>
-					<!-- /.box -->
-                </div>
-                @if ($loop->iteration % 3 == 0)
-    				<div class="clearfix"></div>
-    			@endif
-            @endforeach
-
-            <div class="col-md-12">
-                {{ $packages->links() }}
-            </div>
+<section class="content tw-px-4 sm:tw-px-6 tw-mt-5">
+    @if($packages->isEmpty())
+        <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm tw-p-12 tw-text-center">
+            <svg class="tw-w-10 tw-h-10 tw-text-gray-300 tw-mx-auto tw-mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+            </svg>
+            <p class="tw-text-sm tw-text-gray-500">No packages yet. <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'create']) }}" class="tw-text-indigo-600 hover:tw-underline">Create your first package</a>.</p>
         </div>
+    @else
+    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-5">
+        @foreach ($packages as $package)
+        <div class="tw-bg-white tw-rounded-xl tw-ring-1 tw-ring-gray-200 tw-shadow-sm tw-flex tw-flex-col tw-overflow-hidden">
 
-    </div> --}}
-
-        <div
-            class="tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
-            <div class="tw-p-4 sm:tw-p-5">
-                <div class="tw-flex tw-justify-end tw-gap-2.5">
-                    
-                        <a class="tw-dw-btn tw-bg-gradient-to-r tw-from-indigo-600 tw-to-blue-500 tw-font-bold tw-text-white tw-border-none tw-rounded-full pull-right"
-                            href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'create']) }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg> @lang('messages.add')
-                        </a>
-                </div>
-                <div class="tw-flow-root tw-mt-5 tw-border-b tw-border-gray-200">
-                    <div class="tw-mx-4 tw--my-2 tw-overflow-x-auto sm:tw--mx-5">
-                        <div class="tw-inline-block tw-min-w-full tw-py-2 tw-align-middle sm:tw-px-5">
-                            @foreach ($packages as $package)
-                                <div class="col-md-4 tw-mt-4">
-                                    <div class="box box-success hvr-grow-shadow">
-                                        <div class="box-header with-border text-center">
-                                            <h2 class="box-title">{{ $package->name }}</h2>
-                                            @if ($package->mark_package_as_popular == 1)
-                                                <div class="pull-right">
-                                                    <span class="badge bg-green">
-                                                        @lang('superadmin::lang.popular')
-                                                    </span>
-                                                </div>
-                                            @endif
-                                            <div class="row">
-                                                @if ($package->is_private)
-                                                    <a href="#!" class="btn btn-box-tool">
-                                                        <i class="fas fa-lock fa-lg text-warning" data-toggle="tooltip"
-                                                            title="@lang('superadmin::lang.private_superadmin_only')"></i>
-                                                    </a>
-                                                @endif
-
-                                                @if ($package->is_one_time)
-                                                    <a href="#!" class="btn btn-box-tool">
-                                                        <i class="fas fa-dot-circle fa-lg text-info" data-toggle="tooltip"
-                                                            title="@lang('superadmin::lang.one_time_only_subscription')"></i>
-                                                    </a>
-                                                @endif
-
-                                                @if ($package->is_active == 1)
-                                                    <span class="badge bg-green">
-                                                        @lang('superadmin::lang.active')
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-red">
-                                                        @lang('superadmin::lang.inactive')
-                                                    </span>
-                                                @endif
-
-                                                <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'edit'], [$package->id]) }}"
-                                                    class="btn btn-box-tool" title="edit"><i class="fa fa-edit"></i></a>
-                                                <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'destroy'], [$package->id]) }}"
-                                                    class="btn btn-box-tool link_confirmation" title="delete"><i
-                                                        class="fa fa-trash"></i></a>
-
-                                            </div>
-                                        </div>
-                                        <!-- /.box-header -->
-                                        <div class="box-body text-center">
-
-                                            @if ($package->location_count == 0)
-                                                @lang('superadmin::lang.unlimited')
-                                            @else
-                                                {{ $package->location_count }}
-                                            @endif
-
-                                            @lang('business.business_locations')
-                                            <br />
-
-                                            @if ($package->user_count == 0)
-                                                @lang('superadmin::lang.unlimited')
-                                            @else
-                                                {{ $package->user_count }}
-                                            @endif
-
-                                            @lang('superadmin::lang.users')
-                                            <br />
-
-                                            @if ($package->product_count == 0)
-                                                @lang('superadmin::lang.unlimited')
-                                            @else
-                                                {{ $package->product_count }}
-                                            @endif
-
-                                            @lang('superadmin::lang.products')
-                                            <br />
-
-                                            @if ($package->invoice_count == 0)
-                                                @lang('superadmin::lang.unlimited')
-                                            @else
-                                                {{ $package->invoice_count }}
-                                            @endif
-
-                                            @lang('superadmin::lang.invoices')
-                                            <br />
-
-                                            @if ($package->trial_days != 0)
-                                                {{ $package->trial_days }} @lang('superadmin::lang.trial_days')
-                                                <br />
-                                            @endif
-
-                                            @if (!empty($package->custom_permissions))
-                                                @foreach ($package->custom_permissions as $permission => $value)
-                                                    @isset($permission_formatted[$permission])
-                                                        {{ $permission_formatted[$permission] }}
-                                                        <br />
-                                                    @endisset
-                                                @endforeach
-                                            @endif
-
-                                            <h3 class="text-center">
-                                                @if ($package->price != 0)
-                                                    <span class="display_currency" data-currency_symbol="true">
-                                                        {{ $package->price }}
-                                                    </span>
-
-                                                    <small>
-                                                        / {{ $package->interval_count }}
-                                                        {{ __('lang_v1.' . $package->interval) }}
-                                                    </small>
-                                                @else
-                                                    @lang('superadmin::lang.free_for_duration', ['duration' => $package->interval_count . ' ' . __('lang_v1.' . $package->interval)])
-                                                @endif
-                                            </h3>
-
-                                        </div>
-                                        <!-- /.box-body -->
-
-                                        <div class="box-footer text-center">
-                                            {{ $package->description }}
-                                        </div>
-                                    </div>
-                                    <!-- /.box -->
-                                </div>
-                                @if ($loop->iteration % 3 == 0)
-                                    <div class="clearfix"></div>
-                                @endif
-                            @endforeach
-
-                            <div class="col-md-12">
-                                {{ $packages->links() }}
-                            </div>
-                        </div>
+            {{-- Header --}}
+            <div class="tw-px-5 tw-pt-5 tw-pb-4 tw-border-b tw-border-gray-100">
+                <div class="tw-flex tw-items-start tw-justify-between tw-gap-2">
+                    <div>
+                        <h3 class="tw-text-base tw-font-bold tw-text-gray-900 tw-leading-tight">{{ $package->name }}</h3>
+                        <p class="tw-text-xs tw-text-gray-500 tw-mt-0.5">{{ $package->description }}</p>
+                    </div>
+                    <div class="tw-flex tw-flex-col tw-items-end tw-gap-1 tw-shrink-0">
+                        @if ($package->is_active)
+                            <span class="tw-inline-flex tw-items-center tw-px-2 tw-py-0.5 tw-rounded-full tw-text-xs tw-font-medium tw-bg-green-50 tw-text-green-700">@lang('superadmin::lang.active')</span>
+                        @else
+                            <span class="tw-inline-flex tw-items-center tw-px-2 tw-py-0.5 tw-rounded-full tw-text-xs tw-font-medium tw-bg-red-50 tw-text-red-700">@lang('superadmin::lang.inactive')</span>
+                        @endif
+                        @if ($package->mark_package_as_popular)
+                            <span class="tw-inline-flex tw-items-center tw-px-2 tw-py-0.5 tw-rounded-full tw-text-xs tw-font-medium tw-bg-amber-50 tw-text-amber-700">@lang('superadmin::lang.popular')</span>
+                        @endif
                     </div>
                 </div>
+
+                {{-- Price --}}
+                <div class="tw-mt-3">
+                    @if ($package->price != 0)
+                        <span class="tw-text-2xl tw-font-bold tw-text-gray-900">
+                            <span class="display_currency" data-currency_symbol="true">{{ $package->price }}</span>
+                        </span>
+                        <span class="tw-text-sm tw-text-gray-500 tw-ml-1">/ {{ $package->interval_count }} {{ __('lang_v1.' . $package->interval) }}</span>
+                    @else
+                        <span class="tw-text-lg tw-font-semibold tw-text-green-600">
+                            @lang('superadmin::lang.free_for_duration', ['duration' => $package->interval_count . ' ' . __('lang_v1.' . $package->interval)])
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Limits --}}
+            <div class="tw-px-5 tw-py-4 tw-flex-1">
+                <div class="tw-grid tw-grid-cols-2 tw-gap-2 tw-text-xs">
+                    @foreach ([
+                        [__('superadmin::lang.location_count'), $package->location_count],
+                        [__('superadmin::lang.user_count'), $package->user_count],
+                        [__('superadmin::lang.product_count'), $package->product_count],
+                        [__('superadmin::lang.invoice_count'), $package->invoice_count],
+                    ] as [$label, $count])
+                    <div class="tw-flex tw-items-center tw-gap-1.5">
+                        <svg class="tw-w-3.5 tw-h-3.5 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="tw-text-gray-600">
+                            @if($count == 0) <span class="tw-font-medium tw-text-indigo-600">@lang('superadmin::lang.unlimited')</span>
+                            @else <span class="tw-font-medium tw-text-gray-900">{{ $count }}</span>
+                            @endif
+                            {{ $label }}
+                        </span>
+                    </div>
+                    @endforeach
+
+                    @if ($package->trial_days)
+                    <div class="tw-flex tw-items-center tw-gap-1.5 tw-col-span-2">
+                        <svg class="tw-w-3.5 tw-h-3.5 tw-text-indigo-400 tw-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tw-text-gray-600"><span class="tw-font-medium tw-text-gray-900">{{ $package->trial_days }}</span> @lang('superadmin::lang.trial_days')</span>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Custom Permissions --}}
+                @if (!empty($package->custom_permissions))
+                    <div class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-1">
+                        @foreach ($package->custom_permissions as $perm => $val)
+                            @isset($permission_formatted[$perm])
+                                <span class="tw-inline-flex tw-px-2 tw-py-0.5 tw-rounded tw-bg-indigo-50 tw-text-indigo-700 tw-text-xs">{{ $permission_formatted[$perm] }}</span>
+                            @endisset
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Flags --}}
+                <div class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-1.5">
+                    @if ($package->is_private)
+                        <span class="tw-inline-flex tw-items-center tw-gap-1 tw-px-2 tw-py-0.5 tw-rounded tw-bg-gray-100 tw-text-gray-600 tw-text-xs">
+                            <svg class="tw-w-3 tw-h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            @lang('superadmin::lang.private_superadmin_only')
+                        </span>
+                    @endif
+                    @if ($package->is_one_time)
+                        <span class="tw-inline-flex tw-items-center tw-gap-1 tw-px-2 tw-py-0.5 tw-rounded tw-bg-sky-50 tw-text-sky-600 tw-text-xs">
+                            @lang('superadmin::lang.one_time_only_subscription')
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Actions --}}
+            <div class="tw-px-5 tw-py-3 tw-border-t tw-border-gray-100 tw-flex tw-items-center tw-justify-end tw-gap-2">
+                <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'edit'], [$package->id]) }}"
+                   class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-indigo-600 hover:tw-bg-indigo-50 tw-transition-colors tw-no-underline">
+                    <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    @lang('messages.edit')
+                </a>
+                <a href="{{ action([\Modules\Superadmin\Http\Controllers\PackagesController::class, 'destroy'], [$package->id]) }}"
+                   class="tw-inline-flex tw-items-center tw-gap-1.5 tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-medium tw-text-red-600 hover:tw-bg-red-50 tw-transition-colors tw-no-underline link_confirmation">
+                    <svg class="tw-w-3.5 tw-h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    @lang('messages.delete')
+                </a>
             </div>
         </div>
+        @endforeach
+    </div>
 
-        <div class="modal fade brands_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-        </div>
+    <div class="tw-mt-5">
+        {{ $packages->links() }}
+    </div>
+    @endif
 
-    </section>
-    <!-- /.content -->
-
+    <div class="modal fade brands_modal" tabindex="-1" role="dialog"></div>
+</section>
 @endsection
