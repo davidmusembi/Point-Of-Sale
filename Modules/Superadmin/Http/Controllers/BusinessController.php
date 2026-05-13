@@ -269,101 +269,100 @@ class BusinessController extends BaseController
 
         $business = null;
         $user = null;
-        $subscription_details = [];
+        $plain_password = null;
+
+        // Build location with safe defaults (address fields are optional in the superadmin form)
+        $business_location = array_merge(
+            ['name' => $request->input('name'), 'country' => '', 'state' => '', 'city' => '', 'zip_code' => '', 'landmark' => '', 'website' => '', 'mobile' => '', 'alternate_number' => ''],
+            $request->only(['name', 'country', 'state', 'city', 'zip_code', 'landmark', 'website', 'mobile', 'alternate_number'])
+        );
 
         try {
             DB::beginTransaction();
 
-            //Create owner with a generated one-time password.
             $pool = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             $plain_password = substr(str_shuffle(str_repeat($pool, 3)), 0, 12);
+
             $owner_details = $request->only(['surname', 'first_name', 'last_name', 'username', 'email']);
             $owner_details['password'] = $plain_password;
             $owner_details['language'] = env('APP_LOCALE');
-
             $user = User::create_user($owner_details);
 
             $business_details = $request->only(['name', 'start_date', 'currency_id', 'tax_label_1', 'tax_number_1', 'tax_label_2', 'tax_number_2', 'time_zone', 'accounting_method', 'fy_start_month']);
-
-            $business_location = $request->only(['name', 'country', 'state', 'city', 'zip_code', 'landmark', 'website', 'mobile', 'alternate_number']);
-
-            //Create the business
             $business_details['owner_id'] = $user->id;
+
             if (! empty($business_details['start_date'])) {
                 $business_details['start_date'] = $this->businessUtil->uf_date($business_details['start_date']);
             }
 
-            //upload logo
             $logo_name = $this->businessUtil->uploadFile($request, 'business_logo', 'business_logos', 'image');
             if (! empty($logo_name)) {
                 $business_details['logo'] = $logo_name;
             }
 
-            //default enabled modules
             $business_details['enabled_modules'] = ['purchases', 'add_sale', 'pos_sale', 'stock_transfers', 'stock_adjustment', 'expenses'];
-
-            //created_by
             $business_details['created_by'] = $request->session()->get('user.id');
 
             $business = $this->businessUtil->createNewBusiness($business_details);
 
-            //Update user with business id
             $user->business_id = $business->id;
             $user->save();
 
-            $this->businessUtil->newBusinessDefaultResources($business->id, $user->id);
-            $new_location = $this->businessUtil->addLocation($business->id, $business_location);
-
-            //create new permission with the new location
-            Permission::create(['name' => 'location.'.$new_location->id]);
-
+            // Subscription (central DB only)
             $subscription_details = $request->only(['package_id', 'paid_via', 'payment_transaction_id']);
-
-            //Add subscription if present
             if (! empty($subscription_details['package_id']) && ! empty($subscription_details['paid_via'])) {
                 $package = Package::find($subscription_details['package_id']);
-
-                $subscription = $this->_add_subscription(null, $package->price, $business->id, $subscription_details['package_id'], $subscription_details['paid_via'], $subscription_details['payment_transaction_id'], $request->session()->get('user.id'), true);
+                $this->_add_subscription(null, $package->price, $business->id, $subscription_details['package_id'], $subscription_details['paid_via'], $subscription_details['payment_transaction_id'], $request->session()->get('user.id'), true);
             }
 
             DB::commit();
 
-            // Send welcome email with one-time credentials.
-            try {
-                $loginUrl = url(config('app.url') . '/login');
-                $user->notify(new BusinessWelcomeNotification(
-                    $business->name,
-                    $loginUrl,
-                    $user->username,
-                    $plain_password
-                ));
-            } catch (\Exception $mailEx) {
-                \Log::warning('Welcome email failed for user ' . $user->id . ': ' . $mailEx->getMessage());
-            }
-
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            \Log::emergency('File:'.$e->getFile().' Line:'.$e->getLine().' Message:'.$e->getMessage());
 
-            $output = ['success' => 0,
-                'msg' => __('messages.something_went_wrong'),
-            ];
-
-            return back()->with('status', $output)->withInput();
+            return back()->with('status', ['success' => 0, 'msg' => __('messages.something_went_wrong')])->withInput();
         }
 
-        //Module function to be called after business is created
+        // Provision the tenant database and run tenant-specific initialization.
+        // newBusinessDefaultResources (roles, invoice layout/scheme, walk-in customer) runs inside
+        // SeedTenantData in the tenant context. addLocation runs after, also in tenant context,
+        // so InvoiceLayout and InvoiceScheme are already available.
+        try {
+            $tenant = $business->fresh()->tenant;
+            if ($tenant) {
+                dispatch_sync(new \Stancl\Tenancy\Jobs\CreateDatabase($tenant));
+                dispatch_sync(new \Stancl\Tenancy\Jobs\MigrateDatabase($tenant));
+                dispatch_sync(new \App\Jobs\SeedTenantData($tenant));
+
+                $tenant->run(function () use ($business, $business_location) {
+                    $new_location = app(\App\Utils\BusinessUtil::class)->addLocation($business->id, $business_location);
+                    \Spatie\Permission\Models\Permission::create(['name' => 'location.' . $new_location->id]);
+                });
+            }
+        } catch (\Exception $e) {
+            \Log::error('Tenant provisioning failed for business ' . $business->id . ': ' . $e->getMessage());
+        }
+
+        // Send welcome email with one-time credentials.
+        try {
+            $user->notify(new BusinessWelcomeNotification(
+                $business->name,
+                url('/login'),
+                $user->username,
+                $plain_password
+            ));
+        } catch (\Exception $mailEx) {
+            \Log::warning('Welcome email failed for user ' . $user->id . ': ' . $mailEx->getMessage());
+        }
+
         if (config('app.env') != 'demo') {
             $this->moduleUtil->getModuleData('after_business_created', ['business' => $business]);
         }
 
-        $output = ['success' => 1,
-            'msg' => __('business.business_created_succesfully'),
-        ];
-
         return redirect()
             ->action([\Modules\Superadmin\Http\Controllers\BusinessController::class, 'index'])
-            ->with('status', $output);
+            ->with('status', ['success' => 1, 'msg' => __('business.business_created_succesfully')]);
     }
 
     /**
