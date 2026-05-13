@@ -18,7 +18,6 @@ use App\Tenant;
 use Modules\Superadmin\Entities\Package;
 use Modules\Superadmin\Notifications\PasswordUpdateNotification;
 use Modules\Superadmin\Notifications\BusinessWelcomeNotification;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -276,7 +275,8 @@ class BusinessController extends BaseController
             DB::beginTransaction();
 
             //Create owner with a generated one-time password.
-            $plain_password = Str::password(12, letters: true, numbers: true, symbols: false);
+            $pool = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            $plain_password = substr(str_shuffle(str_repeat($pool, 3)), 0, 12);
             $owner_details = $request->only(['surname', 'first_name', 'last_name', 'username', 'email']);
             $owner_details['password'] = $plain_password;
             $owner_details['language'] = env('APP_LOCALE');
