@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'cloudflare' => [
+        'token'     => env('CF_API_TOKEN'),
+        'zone_id'   => env('CF_ZONE_ID'),
+        'origin_ip' => env('SERVER_IP'),
+    ],
+
 ];

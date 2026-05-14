@@ -1,10 +1,7 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": [
-        "framework",
-        "laravel"
-    ],
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
     "repositories": [
@@ -21,6 +18,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "composer/semver": "^3.0",
         "consoletvs/charts": "^6.5",
+        "filament/filament": "^3.0",
         "giggsey/libphonenumber-for-php": "^8.12",
         "guzzlehttp/guzzle": "^7.2",
         "knox/pesapal": "1.5",
@@ -59,7 +57,6 @@
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.4"
     },
-    
     "autoload": {
         "files": [
             "app/Http/helpers.php"
@@ -95,7 +92,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ]
     },
     "config": {

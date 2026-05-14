@@ -136,7 +136,7 @@ class ModuleUtil extends Util
      */
     public function hasThePermissionInSubscription($business_id, $permission, $callback_function = null)
     {
-        if (tenancy()->initialized()) {
+        if (tenancy()->tenant !== null) {
             $tenant = tenant();
             $package_id = $tenant->package_id;
 

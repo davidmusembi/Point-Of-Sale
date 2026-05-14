@@ -15,12 +15,10 @@ class Superadmin
      */
     public function handle($request, Closure $next)
     {
-        $administrator_list = config('constants.administrator_usernames');
-
-        if (! empty($request->user()) && in_array(strtolower($request->user()->username), explode(',', strtolower($administrator_list)))) {
+        if ($request->user() && $request->user()->isSuperadmin()) {
             return $next($request);
-        } else {
-            abort(403, 'Unauthorized action.');
         }
+
+        abort(403, 'Unauthorized action.');
     }
 }

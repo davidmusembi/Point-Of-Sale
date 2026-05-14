@@ -96,7 +96,11 @@ class AppServiceProvider extends ServiceProvider
             function ($view) {
                 if (isAppInstalled()) {
                     $keys = ['additional_js', 'additional_css'];
-                    $__system_settings = System::getProperties($keys, true);
+                    try {
+                        $__system_settings = System::getProperties($keys, true);
+                    } catch (\Exception $e) {
+                        $__system_settings = [];
+                    }
 
                     //Get js,css from modules
                     $moduleUtil = new ModuleUtil;
@@ -233,6 +237,8 @@ class AppServiceProvider extends ServiceProvider
             }
             echo $formated_number; ?>';
         });
+
+        \Modules\Superadmin\Entities\Subscription::observe(\App\Observers\SubscriptionObserver::class);
 
         $this->registerCommands();
     }

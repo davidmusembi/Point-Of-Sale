@@ -33,7 +33,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
+            // Pin central routes to the central domain so they never
+            // conflict with identically-named tenant routes (e.g. GET /).
+            Route::domain(env('APP_DOMAIN', config('tenancy.central_domains.2', 'localhost')))
+                ->middleware('web')
                 ->group(base_path('routes/web.php'));
         });
     }

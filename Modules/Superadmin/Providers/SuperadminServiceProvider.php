@@ -23,7 +23,10 @@ class SuperadminServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        // Only register migrations for the central DB; tenant DBs use database/migrations/tenant/
+        if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        }
         $this->registerScheduleCommands();
 
         view::composer('superadmin::layouts.partials.active_subscription', function ($view) {

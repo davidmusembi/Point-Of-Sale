@@ -61,22 +61,12 @@ class Subscription extends Model
     public static function active_subscription($business_id)
     {
         $date_today = \Carbon::today()->toDateString();
-        
-        // $subscription = Subscription::where('business_id', $business_id)
-        //                     ->whereDate('start_date', '<=', $date_today)
-        //                     ->whereDate('end_date', '>=', $date_today)
-        //                     ->approved()
-        //                     ->first();
-        $subscription = Subscription::create([
-            'business_id' => $business_id,
-            'package_id' => 1,
-            'status' => 'approved',
-            'start_date' => now(),
-            'end_date' => now()->addCenturyNoOverflow(),
-            'package_details' => [],
-            'created_id' => 1,
-        ]);
-        return $subscription;
+
+        return Subscription::where('business_id', $business_id)
+                    ->whereDate('start_date', '<=', $date_today)
+                    ->whereDate('end_date', '>=', $date_today)
+                    ->approved()
+                    ->first();
     }
 
     /**

@@ -70,7 +70,7 @@ class LoginController extends Controller
     public function logout()
     {
         $user = auth()->user();
-        if ($user && ! $this->isSuperadmin($user)) {
+        if ($user && !$this->isSuperadmin($user)) {
             $this->businessUtil->activityLog($user, 'logout');
         }
 
@@ -97,23 +97,23 @@ class LoginController extends Controller
 
         $this->businessUtil->activityLog($user, 'login', null, [], false, $user->business_id);
 
-        if (! $user->business->is_active) {
+        if (!$user->business->is_active) {
             \Auth::logout();
 
             return redirect('/login')
-              ->with(
-                  'status',
-                  ['success' => 0, 'msg' => __('lang_v1.business_inactive')]
-              );
+                ->with(
+                    'status',
+                    ['success' => 0, 'msg' => __('lang_v1.business_inactive')]
+                );
         } elseif ($user->status != 'active') {
             \Auth::logout();
 
             return redirect('/login')
-              ->with(
-                  'status',
-                  ['success' => 0, 'msg' => __('lang_v1.user_inactive')]
-              );
-        } elseif (! $user->allow_login) {
+                ->with(
+                    'status',
+                    ['success' => 0, 'msg' => __('lang_v1.user_inactive')]
+                );
+        } elseif (!$user->allow_login) {
             \Auth::logout();
 
             return redirect('/login')
@@ -121,7 +121,7 @@ class LoginController extends Controller
                     'status',
                     ['success' => 0, 'msg' => __('lang_v1.login_not_allowed')]
                 );
-        } elseif (($user->user_type == 'user_customer') && ! $this->moduleUtil->hasThePermissionInSubscription($user->business_id, 'crm_module')) {
+        } elseif (($user->user_type == 'user_customer') && !$this->moduleUtil->hasThePermissionInSubscription($user->business_id, 'crm_module')) {
             \Auth::logout();
 
             return redirect('/login')
@@ -137,45 +137,52 @@ class LoginController extends Controller
         $user = \Auth::user();
 
         if ($this->isSuperadmin($user)) {
-            return '/superadmin';
+            return '/sadmin';
         }
 
-        if (! $user->can('dashboard.data') && $user->can('sell.create')) {
-            return '/pos/create';
+        $path = '/home';
+        if (!$user->can('dashboard.data') && $user->can('sell.create')) {
+            $path = '/pos/create';
+        } elseif ($user->user_type == 'user_customer') {
+            $path = 'contact/contact-dashboard';
         }
 
-        if ($user->user_type == 'user_customer') {
-            return 'contact/contact-dashboard';
+        // If logging in from central domain, redirect to tenant domain
+        $request = request();
+        if (in_array($request->getHost(), config('tenancy.central_domains', []))) {
+            if ($user->business_id) {
+                $tenant = \App\Tenant::find($user->business_id);
+                if ($tenant && $tenant->domains->count() > 0) {
+                    $domain = $tenant->domains->first()->domain;
+                    $scheme = $request->getScheme();
+                    return $scheme . '://' . $domain . '/' . ltrim($path, '/');
+                }
+            }
         }
 
-        return '/home';
+        return $path;
     }
 
     private function isSuperadmin($user): bool
     {
-        $list = config('constants.administrator_usernames', '');
-
-        return ! empty($list) && in_array(
-            strtolower($user->username),
-            explode(',', strtolower($list))
-        );
+        return $user && $user->isSuperadmin();
     }
 
     public function validateLogin(Request $request)
     {
-        if(config('constants.enable_recaptcha')){
+        if (config('constants.enable_recaptcha')) {
             $this->validate($request, [
                 $this->username() => 'required|string',
                 'password' => 'required|string',
                 'g-recaptcha-response' => ['required', new ReCaptcha]
             ]);
-        }else{
+        } else {
             $this->validate($request, [
                 $this->username() => 'required|string',
                 'password' => 'required|string',
             ]);
         }
-       
+
     }
 
 }

@@ -3,6 +3,9 @@
 namespace App;
 
 use DB;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory;
     use Notifiable;
@@ -37,6 +40,38 @@ class User extends Authenticatable
 
     // change api guard to web
     protected $guard_name = 'web';
+
+    public function isSuperadmin(): bool
+    {
+        // 1. Check against explicitly defined usernames in config
+        $admins = config('constants.administrator_usernames', '');
+        if (!empty($admins) && in_array(strtolower($this->username), explode(',', strtolower($admins)))) {
+            return true;
+        }
+
+        // 2. Check if user has Superadmin role (using Spatie Permissions)
+        if ($this->hasRole('Superadmin')) {
+            return true;
+        }
+
+        // 3. Central admin check: typically central SaaS admins don't belong to a specific tenant business
+        if (is_null($this->business_id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isSuperadmin();
+    }
+
+    public function getFilamentName(): string
+    {
+        $full = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+        return $full ?: ($this->username ?? 'User');
+    }
 
     /**
      * The attributes that should be mutated to dates.
@@ -82,7 +117,7 @@ class User extends Authenticatable
      */
     public static function create_user($details)
     {
-        if (tenancy()->initialized()) {
+        if (tenancy()->tenant !== null) {
             $tenant = tenant();
             $package_id = $tenant->package_id;
 

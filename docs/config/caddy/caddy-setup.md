@@ -90,6 +90,25 @@ curl -sI https://test-tenant.yourdomain.com | grep -i "server"
 | Always Use HTTPS | On |
 | Minimum TLS Version | TLS 1.2 |
 
+## API token usage
+
+The single `CF_API_TOKEN` in `caddy.env` is used by two systems:
+
+| System | Purpose |
+|--------|---------|
+| Caddy | DNS-01 ACME challenge to obtain the wildcard TLS cert (`*.yourdomain.com`) |
+| Laravel (`CreateCloudflareDnsRecord` job) | Creates a per-tenant A record when a new business is provisioned |
+
+The token needs **Zone → DNS → Edit** scope. Copy the same value into the Laravel `.env`:
+
+```bash
+CF_API_TOKEN=...   # same as caddy.env
+CF_ZONE_ID=...     # Zone ID from Cloudflare dashboard → Overview → right sidebar
+SERVER_IP=...      # this server's public IP
+```
+
+Per-tenant records (`acme.nairobyte.xyz → SERVER_IP, proxied`) are created automatically on tenant provisioning. The wildcard A record (`*.nairobyte.xyz`) catches any subdomain that doesn't yet have its own record — so both work together.
+
 ## Log locations
 
 | Log | Path |

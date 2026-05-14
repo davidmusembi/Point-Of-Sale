@@ -698,7 +698,7 @@ class Util
             return null;
         }
 
-        if (tenancy()->initialized()) {
+        if (tenancy()->tenant !== null) {
             $tenant = tenant();
             $package_id = $tenant->package_id;
 

@@ -21,7 +21,9 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        }
         $this->registerScheduleCommands();
 
         //TODO:Remove

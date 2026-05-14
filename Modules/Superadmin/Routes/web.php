@@ -6,7 +6,7 @@
 
 Route::get('/pricing', [Modules\Superadmin\Http\Controllers\PricingController::class, 'index'])->name('pricing');
 
-Route::middleware('web', 'auth', 'language', 'AdminSidebarMenu', 'superadmin')->prefix('superadmin')->group(function () {
+Route::middleware('web', 'auth', 'language', 'AdminSidebarMenu', 'superadmin', \App\Http\Middleware\PreventAccessFromTenantDomains::class)->prefix('superadmin')->group(function () {
     Route::get('/install', [Modules\Superadmin\Http\Controllers\InstallController::class, 'index']);
     Route::post('/install', [Modules\Superadmin\Http\Controllers\InstallController::class, 'install']);
     Route::get('/install/update', [Modules\Superadmin\Http\Controllers\InstallController::class, 'update']);
@@ -52,7 +52,7 @@ Route::middleware('web', 'auth', 'language', 'AdminSidebarMenu', 'superadmin')->
     Route::delete('/domains/{id}', [Modules\Superadmin\Http\Controllers\DomainController::class, 'destroy'])->name('superadmin.domains.destroy');
 });
 
-Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'AdminSidebarMenu')->group(function () {
+Route::middleware('web', 'universal', 'SetSessionData', 'auth', 'language', 'timezone', 'AdminSidebarMenu')->group(function () {
     //Routes related to paypal checkout
     Route::post('/paypal-express-checkout', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'paypalExpressCheckout'])->name('paypalExpressCheckout');
 

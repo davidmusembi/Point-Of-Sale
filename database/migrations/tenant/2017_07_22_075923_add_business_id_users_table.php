@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('business_id')->unsigned()->nullable()->after('remember_token');
-            $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
-        });
+        if (!Schema::hasColumn('users', 'business_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->integer('business_id')->unsigned()->nullable()->after('remember_token');
+                $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
+            });
+        }
     }
 
     /**

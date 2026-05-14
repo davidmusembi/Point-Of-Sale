@@ -26,7 +26,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantCreated::class => [
                 JobPipeline::make([
                     Jobs\CreateDatabase::class,
-                    Jobs\MigrateDatabase::class,
+                    \App\Jobs\MigrateTenantDatabase::class,
                     \App\Jobs\SeedTenantData::class,
                     // Jobs\SeedDatabase::class,
 
@@ -52,7 +52,11 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Domain events
             Events\CreatingDomain::class => [],
-            Events\DomainCreated::class => [],
+            Events\DomainCreated::class => [
+                function (\Stancl\Tenancy\Events\DomainCreated $event) {
+                    \App\Jobs\CreateCloudflareDnsRecord::dispatch($event->domain->domain);
+                },
+            ],
             Events\SavingDomain::class => [],
             Events\DomainSaved::class => [],
             Events\UpdatingDomain::class => [],

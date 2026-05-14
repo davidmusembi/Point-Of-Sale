@@ -62,6 +62,13 @@ class Business extends Model
         return $this->hasOne(\App\User::class, 'id', 'owner_id');
     }
 
+    public function activeSubscription()
+    {
+        return $this->hasOne(\Modules\Superadmin\Entities\Subscription::class, 'business_id')
+            ->where('status', 'approved')
+            ->latest('end_date');
+    }
+
     /**
      * Get the Business currency.
      */
@@ -106,7 +113,7 @@ class Business extends Model
      */
     public static function create_business($details)
     {
-        if (tenancy()->initialized()) {
+        if (tenancy()->tenant !== null) {
             // Logic for adding a business within an existing tenant
             $tenant = tenant();
             $package_id = $tenant->package_id;
@@ -128,34 +135,10 @@ class Business extends Model
             return Business::create($details);
         }
 
-        // Central registration logic (first business for a new account)
+        // Central registration logic (first business for a new account).
+        // Tenant + subdomain are provisioned later by SubscriptionObserver
+        // when the first approved subscription is created.
         $business = Business::create($details);
-
-        $requestedSlug = request()->get('subdomain');
-        $baseSlug = $requestedSlug
-            ? \Illuminate\Support\Str::slug($requestedSlug)
-            : \Illuminate\Support\Str::slug($business->name);
-
-        // Ensure the subdomain slug is unique across existing domains
-        $slug = $baseSlug;
-        $counter = 1;
-        while (\Stancl\Tenancy\Database\Models\Domain::where('domain', 'like', $slug . '.%')->orWhere('domain', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $counter++;
-        }
-
-        $package_id = request()->get('package_id');
-        $centralDomain = env('APP_DOMAIN', config('tenancy.central_domains.0', 'localhost'));
-
-        $tenant = \App\Tenant::create([
-            'owner_id'   => $business->owner_id,
-            'package_id' => $package_id,
-        ]);
-
-        $tenant->createDomain(['domain' => $slug . '.' . $centralDomain]);
-
-        // Link the central business record to its tenant
-        $business->tenant_id = $tenant->id;
-        $business->save();
 
         return $business;
     }

@@ -63,14 +63,17 @@ return [
             ]) : [],
         ],
 
-        'tenant' => [
+        // Template used by stancl/tenancy to build per-tenant connections.
+        // Must NOT be named 'tenant' — purgeTenantConnection() unsets 'tenant',
+        // so a distinct name keeps this template intact between tenant switches.
+        'tenant_base' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
+            'host' => env('TENANCY_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('TENANCY_DB_PORT', env('DB_PORT', '3306')),
             'database' => null,
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'username' => env('TENANCY_DB_USERNAME', env('DB_USERNAME', 'forge')),
+            'password' => env('TENANCY_DB_PASSWORD', env('DB_PASSWORD', '')),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,9 +14,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('packages', function (Blueprint $table) {
-            $table->integer('business_count')->default(1)->after('location_count')->comment('No. of Businesses allowed, 0 = infinite');
+        Schema::create('system', function (Blueprint $table) {
+            $table->string('key');
+            $table->text('value')->nullable();
         });
+
+        $version = config('author.app_version');
+
+        DB::table('system')->insert(
+            ['key' => 'db_version', 'value' => $version]
+        );
     }
 
     /**
@@ -25,8 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('packages', function (Blueprint $table) {
-            $table->dropColumn('business_count');
-        });
+        Schema::dropIfExists('system');
     }
 };

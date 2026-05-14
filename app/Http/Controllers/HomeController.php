@@ -67,6 +67,9 @@ class HomeController extends Controller
     public function index()
     {
         $user = auth()->user();
+        if (! $user) {
+            return redirect()->route('login');
+        }
         if ($user->user_type == 'user_customer') {
             return redirect()->action([\Modules\Crm\Http\Controllers\DashboardController::class, 'index']);
         }

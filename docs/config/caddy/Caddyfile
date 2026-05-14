@@ -31,6 +31,21 @@
 }
 
 # ---------------------------------------------------------------------------
+# Internal: on-demand TLS validation endpoint (Caddy → Laravel check)
+# Caddy calls this before issuing an on-demand cert for a custom domain.
+# Listens only on loopback — never exposed externally.
+# ---------------------------------------------------------------------------
+http://localhost:8080 {
+    bind 127.0.0.1
+
+    root * /var/www/pos/public
+    php_fastcgi unix//run/php/php8.1-fpm-pos.sock {
+        index index.php
+    }
+    file_server
+}
+
+# ---------------------------------------------------------------------------
 # Central app — explicit hostname
 # ---------------------------------------------------------------------------
 yourdomain.com, www.yourdomain.com {
@@ -101,15 +116,6 @@ yourdomain.com, www.yourdomain.com {
         X-XSS-Protection       "1; mode=block"
         Referrer-Policy        "strict-origin-when-cross-origin"
         -Server
-    }
-
-    # Rate limit — 30 requests/min per IP for unknown tenant probing
-    rate_limit {
-        zone tenant_probe {
-            key {remote_host}
-            events 30
-            window 1m
-        }
     }
 
     log {

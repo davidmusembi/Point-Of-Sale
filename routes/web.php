@@ -20,6 +20,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/check-domain', function (\Illuminate\Http\Request $request) {
+    $trusted = array_filter(array_map(
+        'trim',
+        explode(',', env('CADDY_TRUSTED_IPS', '127.0.0.1,::1'))
+    ));
+
+    if (!in_array($request->server('REMOTE_ADDR'), $trusted)) {
+        abort(403);
+    }
+
+    $domain = $request->query('domain');
+    if (!$domain) {
+        return response('', 400);
+    }
+
+    $exists = \Stancl\Tenancy\Database\Models\Domain::where('domain', $domain)->exists();
+    return response('', $exists ? 200 : 404);
+});
+
 Auth::routes();
 
 Route::get('/business/register', [BusinessController::class, 'getRegister'])->name('business.getRegister');

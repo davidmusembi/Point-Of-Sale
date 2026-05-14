@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"E:\\\\WorkSpace\\\\afidone\\\\Point-Of-Sale\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Get-ChildItem -Path \"E:\\\\WorkSpace\\\\afidone\\\\Point-Of-Sale\\\\app\\\\Providers\" -Filter \"*enancy*\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(xargs grep -l \"business_count\\\\|storage_limit\\\\|enabled_modules\")",
+      "Read(//mnt/e/WorkSpace/afidone/**)",
+      "Bash(php artisan *)",
+      "Bash(findstr /s /m \"extends\\('layouts.app'\\)\" \"E:\\\\WorkSpace\\\\afidone\\\\Point-Of-Sale\\\\Modules\\\\Superadmin\\\\Resources\\\\views\\\\*\")",
+      "Bash(findstr *)",
+      "Bash(Select-String -Path \"E:\\\\WorkSpace\\\\afidone\\\\Point-Of-Sale\\\\Modules\\\\Superadmin\\\\Http\\\\Controllers\\\\BusinessController.php\" -Pattern \"public function \\(store|create|index|show\\)\")",
+      "Bash(Select-Object LineNumber, Line)",
+      "Bash(php -l app/Filament/Superadmin/Resources/BusinessResource.php)",
+      "Bash(php -l app/Filament/Superadmin/Resources/PackageResource.php)",
+      "Bash(php -l app/Filament/Superadmin/Resources/CouponResource.php)",
+      "Bash(php -l app/Filament/Superadmin/Resources/SubscriptionResource.php)",
+      "Bash(php -l app/Filament/Superadmin/Widgets/SuperadminStatsOverview.php)",
+      "Bash(php -l app/Providers/Filament/AdminPanelProvider.php)",
+      "Bash(php -l app/User.php)"
+    ]
+  }
+}

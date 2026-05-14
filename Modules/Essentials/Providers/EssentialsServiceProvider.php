@@ -22,7 +22,9 @@ class EssentialsServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        if (!app(\Stancl\Tenancy\Tenancy::class)->initialized) {
+            $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        }
 
         view::composer(['essentials::layouts.partials.header_part',
             'report.profit_loss', ], function ($view) {

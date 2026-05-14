@@ -28,36 +28,49 @@ class SeedTenantData implements ShouldQueue
     {
         $this->tenant->run(function () {
             $owner_id = $this->tenant->owner_id;
-            $centralConnection = config('tenancy.database.central_connection', 'central');
+            $centralConnection = config('tenancy.database.central_connection', 'mysql');
 
-            // Copy business from central DB to tenant DB
             $central_business = \DB::connection($centralConnection)
                 ->table('business')
                 ->where('owner_id', $owner_id)
                 ->first();
 
-            if ($central_business) {
-                Business::create((array) $central_business);
-            }
-
-            // Copy owner from central DB to tenant DB
-            $owner = \DB::connection($centralConnection)
+            $central_owner = \DB::connection($centralConnection)
                 ->table('users')
                 ->where('id', $owner_id)
                 ->first();
 
-            if ($owner) {
-                User::create((array) $owner);
-            }
-
-            // Seed currencies and core permissions into the fresh tenant DB
+            // Seed currencies first — business.currency_id FK requires them to exist
             (new TenantSeeder())->run();
 
+            // FK insertion order:
+            //   currencies must exist first (seeded above)
+            //   users.business_id → business.id, business.owner_id → users.id (circular)
+            //   Break the cycle: create user with business_id=null, then business, then update user
+            if ($central_owner) {
+                $ownerData = (array) $central_owner;
+                $ownerData['business_id'] = null;
+                User::forceCreate($ownerData);
+            }
+
+            if ($central_business) {
+                $bizData = (array) $central_business;
+                unset($bizData['tenant_id']); // central-only column, absent in tenant DB
+                Business::forceCreate($bizData);
+            }
+
+            if ($central_owner && $central_business) {
+                User::where('id', $central_owner->id)
+                    ->update(['business_id' => $central_business->id]);
+            }
+
             // Create default roles, walk-in customer, invoice layout etc.
-            if ($central_business && $owner) {
+            if ($central_business && $central_owner) {
+                // Spatie Permission caches from central context; reset so it reads tenant permissions
+                app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
                 app(BusinessUtil::class)->newBusinessDefaultResources(
                     $central_business->id,
-                    $owner->id
+                    $central_owner->id
                 );
             }
         });
